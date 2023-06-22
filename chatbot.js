@@ -8,38 +8,42 @@ const opts = {
     password: 'oauth:'+process.env.TWITCH_OAUTH_TOKEN
   },
   channels: [
-    'abudullahmorrison'
+    'abdullahmorrison'
   ]
 };
 
 const client = new tmi.client(opts);
 
-// client.on('message', onMessageHandler);
+client.on('message', onMessageHandler);
 client.on('connected', onConnectedHandler);
 
 client.connect();
 
+function onMessageHandler (target, context, msg, self) {
+  if(msg.toLowerCase() === '!lemon') {
+    createPyramid('Lemon ', 4);
+  }
+}
+
 function onConnectedHandler (addr, port) {
-  createPyramid('Lemon ', 3);
+  console.log(`* Connected to ${addr}:${port}`);
 }
 
 function createPyramid(emote, pyramidSize){
-  for(let i = 0; i < pyramidSize; i++) {
-    let message = emote;
-    for(let j = 0; j < i; j++) {
-      message += emote;
+  let count = 1;
+  let down = false
+  let interval = setInterval(() => {
+    if(count <= pyramidSize && !down){
+      client.say('#abdullahmorrison', emote.repeat(count));
+      count++;
+      if(count === pyramidSize){
+        down = true;
+      }
+    }else if(count > 0 && down){
+      client.say('#abdullahmorrison', emote.repeat(count));
+      count--;
+    }else {
+      clearInterval(interval);
     }
-    setTimeout(() => {
-      client.say(opts.channels[0], message);
-    }, 1000 * i);
-  }
-  for(let i = pyramidSize; i >= 0; i--) {
-    let message = emote;
-    for(let j = 0; j < i; j++) {
-      message += emote;
-    }
-    setTimeout(() => {
-      client.say(opts.channels[0], message);
-    }, 1000 * i);
-  }
+  }, 1000);
 }
