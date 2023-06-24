@@ -10,7 +10,9 @@ const opts = {
   },
   channels: [
     'abdullahmorrison',
-    'brittt'
+    'brittt',
+    'alveussanctuary',
+    'erobb221'
   ]
 }
 
@@ -53,8 +55,17 @@ const refreshToken = async () => {
 }
 
 function onMessageHandler (target, context, msg, self) {
-  if(msg.toLowerCase() === '!lemon') {
-    createPyramid(target, 'Lemon ', 4)
+  switch(msg){
+    case '!catfact':
+      catFact(target)
+      break
+    case '!lemon':
+      createPyramid(target, 'Lemon ', 4)
+      break
+    case '!joke':
+      joke(target)
+    default:
+      break
   }
 }
 
@@ -79,4 +90,24 @@ function createPyramid(channel, emote, pyramidSize){
       clearInterval(interval)
     }
   }, 1500)
+}
+
+const catFact = async (channel)=>{
+  const url = 'https://catfact.ninja/fact'
+  const response = await fetch(url)
+  const json = await response.json()
+  setTimeout(()=>{
+    client.say(channel, json.fact)
+  }, 2000)
+}
+const joke = async (channel)=>{
+  const url = 'https://official-joke-api.appspot.com/random_joke'
+  const response = await fetch(url)
+  const json = await response.json()
+  setTimeout(()=>{
+    client.say(channel, json.setup)
+  }, 2000)
+  setTimeout(()=>{
+    client.say(channel, json.punchline)
+  }, 10000)
 }
