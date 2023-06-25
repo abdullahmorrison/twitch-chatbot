@@ -62,7 +62,7 @@ function onMessageHandler (target, context, msg, self) {
     case '!lemon':
       createPyramid(target, 'Lemon ', 4)
       break
-    case '!joke':
+    case '!tellmeajoke':
       joke(target)
     default:
       break
@@ -110,4 +110,16 @@ const joke = async (channel)=>{
   setTimeout(()=>{
     client.say(channel, json.punchline)
   }, 10000)
+}
+
+function countUpTo(number, channel, emote){
+  let count = 667
+  let interval = setInterval(() => {
+    if(count <= number){
+      client.say(channel, emote+' '+count)
+      count++
+    }else {
+      clearInterval(interval)
+    }
+  }, 2500)
 }
