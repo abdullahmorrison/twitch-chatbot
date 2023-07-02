@@ -12,7 +12,7 @@ const opts = {
     'abdullahmorrison',
     'brittt',
     'alveussanctuary',
-    'erobb221'
+    'erobb221',
   ]
 }
 
@@ -54,7 +54,19 @@ const refreshToken = async () => {
   }
 }
 
+let previousMessage = ""
+let count = 1
 function onMessageHandler (target, context, msg, self) {
+  const pyramidChecker = msg.split(' ')
+  if(context.username == 'sh3dder' && pyramidChecker.length == 2 && pyramidChecker[0] == pyramidChecker[1] && pyramidChecker[0] == previousMessage){
+    client.say(target, 'kek cucking @sh3dder \'s pyramid #'+count)
+    count++
+    previousMessage = ""
+    return
+  }else{
+    previousMessage = ""
+  }
+
   switch(msg){
     case '!catfact':
       catFact(target)
@@ -67,10 +79,14 @@ function onMessageHandler (target, context, msg, self) {
     default:
       break
   }
+  if(target == '#erobb221'){
+    previousMessage = msg
+  }
 }
 
 function onConnectedHandler (addr, port) {
   console.log(`* Connected to ${addr}:${port}`)
+  countUpTo(2000, 'erobb221', 'Lemon ')
 }
 
 function createPyramid(channel, emote, pyramidSize){
@@ -113,7 +129,7 @@ const joke = async (channel)=>{
 }
 
 function countUpTo(number, channel, emote){
-  let count = 667
+  let count = 2001
   let interval = setInterval(() => {
     if(count <= number){
       client.say(channel, emote+' '+count)
