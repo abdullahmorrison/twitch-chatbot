@@ -27,46 +27,7 @@ client.on('disconnected', () => {
 
 client.connect()
 
-const refreshToken = async () => {
-  console.log('Refreshing token... \n')
-
-  const refreshUrl = 'https://id.twitch.tv/oauth2/token?'
-    + 'grant_type=refresh_token'
-    + '&refresh_token='+ process.env.TWITCH_REFRESH_TOKEN 
-    + '&client_id=' + process.env.TWITCH_CLIENT_ID 
-    + '&client_secret=' + process.env.TWITCH_CLIENT_SECRET
-
-  const response = await fetch(refreshUrl, { 
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  })
-
-  if(!response.ok){
-    console.log('Error refreshing token')
-    client.disconnect()
-    return
-  }else{
-    const json = await response.json()
-    client.opts.identity.password = 'oauth:'+json.access_token
-    client.connect()
-  }
-}
-
-let previousMessage = ""
-let count = 1
 function onMessageHandler (target, context, msg, self) {
-  const pyramidChecker = msg.split(' ')
-  if(context.username == 'sh3dder' && pyramidChecker.length == 2 && pyramidChecker[0] == pyramidChecker[1] && pyramidChecker[0] == previousMessage){
-    client.say(target, 'kek cucking @sh3dder \'s pyramid #'+count)
-    count++
-    previousMessage = ""
-    return
-  }else{
-    previousMessage = ""
-  }
-
   switch(msg){
     case '!catfact':
       catFact(target)
@@ -79,14 +40,10 @@ function onMessageHandler (target, context, msg, self) {
     default:
       break
   }
-  if(target == '#erobb221'){
-    previousMessage = msg
-  }
 }
 
 function onConnectedHandler (addr, port) {
   console.log(`* Connected to ${addr}:${port}`)
-  countUpTo(2000, 'erobb221', 'Lemon ')
 }
 
 function createPyramid(channel, emote, pyramidSize){
