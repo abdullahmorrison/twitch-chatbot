@@ -22,7 +22,6 @@ client.on('message', onMessageHandler)
 client.on('connected', onConnectedHandler)
 client.on('disconnected', () => {
   console.log('Disconnected from server.')
-  refreshToken()
 })
 
 client.connect()
