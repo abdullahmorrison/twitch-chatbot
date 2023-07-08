@@ -29,6 +29,7 @@ client.connect()
 const blacklist = [
   'rajji',
   'no_coms',
+  'jaskcon_'
 ]
 
 function onMessageHandler (target, context, msg, self) {
