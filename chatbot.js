@@ -36,6 +36,12 @@ function onMessageHandler (target, context, msg, self) {
       break
     case '!tellmeajoke':
       joke(target)
+    case '!dogimage':
+      dogImage(target)
+      break
+    case '!catimage':
+      catImage(target)
+      break
     default:
       break
   }
@@ -83,6 +89,25 @@ const joke = async (channel)=>{
     client.say(channel, json.punchline)
   }, 10000)
 }
+const dogImage = async (channel)=>{
+  const url = 'https://dog.ceo/api/breeds/image/random'
+  const response = await fetch(url)
+  const json = await response.json()
+  setTimeout(()=>{
+    client.say(channel, json.message)
+  }
+  , 2000)
+}
+const catImage = async (channel)=>{
+  const url = 'https://api.thecatapi.com/v1/images/search'
+  const response = await fetch(url)
+  const json = await response.json()
+  setTimeout(()=>{
+    client.say(channel, json[0].url)
+  }
+  , 2000)
+}
+
 
 function countUpTo(number, channel, emote){
   let count = 2001
