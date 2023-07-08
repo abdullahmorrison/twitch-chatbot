@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 import fetch from 'node-fetch'
 import tmi from 'tmi.js'
+import deezNutsJokes from './deeznuts.json' assert { type: "json" }
 
 const opts = {
   identity: {
@@ -55,6 +56,8 @@ function onMessageHandler (target, context, msg, self) {
     case '!randomfact':
       ranoomFact(target)
       break
+    case '!dn':
+      deezNuts(target)
     default:
       break
   }
@@ -129,7 +132,15 @@ const ranoomFact = async (channel)=>{
   }
   , 2000)
 }
-
+const deezNuts = (channel)=>{
+  let random = Math.floor(Math.random() * deezNutsJokes.length)
+  setTimeout(()=>{
+    client.say(channel, deezNutsJokes[random].prompt)
+  }, 2000)
+  setTimeout(()=>{
+    client.say(channel, deezNutsJokes[random].response + " GottEEM")
+  }, 10000)
+}
 
 function countUpTo(number, channel, emote){
   let count = 2001
