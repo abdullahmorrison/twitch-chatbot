@@ -42,6 +42,9 @@ function onMessageHandler (target, context, msg, self) {
     case '!catimage':
       catImage(target)
       break
+    case '!randomfact':
+      ranoomFact(target)
+      break
     default:
       break
   }
@@ -104,6 +107,15 @@ const catImage = async (channel)=>{
   const json = await response.json()
   setTimeout(()=>{
     client.say(channel, json[0].url)
+  }
+  , 2000)
+}
+const ranoomFact = async (channel)=>{
+  const url = 'https://uselessfacts.jsph.pl/random.json?language=en'
+  const response = await fetch(url)
+  const json = await response.json()
+  setTimeout(()=>{
+    client.say(channel, json.text)
   }
   , 2000)
 }
