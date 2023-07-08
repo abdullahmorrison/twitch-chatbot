@@ -27,7 +27,7 @@ client.on('disconnected', () => {
 client.connect()
 
 function onMessageHandler (target, context, msg, self) {
-  switch(msg){
+  switch(msg.split(' ')[0]){
     case '!catfact':
       catFact(target)
       break
