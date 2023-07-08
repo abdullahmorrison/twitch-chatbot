@@ -26,7 +26,16 @@ client.on('disconnected', () => {
 
 client.connect()
 
+const blacklist = [
+  'rajji',
+  'no_coms',
+]
+
 function onMessageHandler (target, context, msg, self) {
+  for(let i = 0; i < blacklist.length; i++) //no commands for blacklisted users
+    if(context.username === blacklist[i])
+      return
+  
   switch(msg.split(' ')[0]){
     case '!catfact':
       catFact(target)
