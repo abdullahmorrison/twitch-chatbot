@@ -54,7 +54,7 @@ function onMessageHandler (target, context, msg, self) {
       catImage(target)
       break
     case '!randomfact':
-      ranoomFact(target)
+      randomFact(target)
       break
     case '!dn':
       deezNuts(target)
@@ -123,7 +123,7 @@ const catImage = async (channel)=>{
   }
   , 2000)
 }
-const ranoomFact = async (channel)=>{
+const randomFact = async (channel)=>{
   const url = 'https://uselessfacts.jsph.pl/random.json?language=en'
   const response = await fetch(url)
   const json = await response.json()
