@@ -139,7 +139,7 @@ const deezNuts = (channel)=>{
     client.say(channel, deezNutsJokes[random].prompt)
   }, 2000)
   setTimeout(()=>{
-    Tclient.say(channel, deezNutsJokes[random].response + " GotEEM")
+    client.say(channel, deezNutsJokes[random].response + " GotEEM")
   }, 10000)
 }
 
