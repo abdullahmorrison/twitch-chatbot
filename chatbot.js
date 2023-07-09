@@ -30,7 +30,8 @@ client.connect()
 const blacklist = [
   'rajji',
   'no_coms',
-  'jaskcon_'
+  'jaskcon_',
+  'nammerino'
 ]
 
 function onMessageHandler (target, context, msg, self) {
