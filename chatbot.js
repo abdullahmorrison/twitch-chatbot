@@ -4,10 +4,12 @@ import fetch from 'node-fetch'
 import tmi from 'tmi.js'
 import deezNutsJokes from './deeznuts.json' assert { type: "json" }
 
+let oauthToken = process.env.TWITCH_OAUTH_TOKEN
+
 const opts = {
   identity: {
     username: 'abdullahmorrison',
-    password: 'oauth:'+process.env.TWITCH_OAUTH_TOKEN
+    password: 'oauth:'+oauthToken
   },
   channels: [
     'abdullahmorrison',
@@ -17,21 +19,13 @@ const opts = {
   ]
 }
 
-const client = new tmi.client(opts)
-
-client.on('message', onMessageHandler)
-client.on('connected', onConnectedHandler)
-client.on('disconnected', () => {
-  console.log('Disconnected from server.')
-})
-
-client.connect()
 
 const blacklist = [
   'rajji',
   'no_coms',
   'jaskcon_',
-  'nammerino'
+  'nammerino',
+  'quickfinesse'
 ]
 
 function onMessageHandler (target, context, msg, self) {
@@ -154,3 +148,12 @@ function countUpTo(number, channel, emote){
     }
   }, 2500)
 }
+
+
+const client = new tmi.client(opts)
+
+client.on('message', onMessageHandler)
+client.on('connected', onConnectedHandler)
+client.on('disconnected', onDisconnectedHandler)
+
+client.connect()
