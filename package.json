@@ -9,7 +9,8 @@
     "start": "ts-node chatbot.ts"
   },
   "devDependencies": {
-    "typescript": "^5.1.6",
-    "node-ts-dev": "^1.0.0"
+    "@types/tmi.js": "^1.8.3",
+    "node-ts-dev": "^1.0.0",
+    "typescript": "^5.1.6"
   }
 }
