@@ -31,6 +31,8 @@ const blacklist = [
 let isOnCooldown = false
 
 function onMessageHandler (target, context, msg, self) {
+  if(isStreamerLive(target.channel)) return
+
   if(isOnCooldown) return
 
   for(let i = 0; i < blacklist.length; i++) //no commands for blacklisted users
@@ -64,6 +66,24 @@ function onMessageHandler (target, context, msg, self) {
 
 function onConnectedHandler (addr, port) {
   console.log(`* Connected to ${addr}:${port}`)
+}
+
+function isStreamerLive(streamerName) {
+  fetch(`https://api.twitch.tv/helix/streams?user_login=${streamerName}`, {
+    headers: {
+      'Client-ID': 'your-client-id', // replace with your own Client-ID
+      'Authorization': 'Bearer your-access-token' // replace with your own access token
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if(data.data.length > 0){
+      return true
+    }else{
+      return false
+    }
+  })
+  .catch(error => console.error(error));
 }
 
 function createPyramid(channel, emote, pyramidSize){
