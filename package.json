@@ -6,6 +6,10 @@
     "tmi.js": "^1.8.5"
   },
   "scripts": {
-    "start": "node chatbot.js"
+    "start": "ts-node chatbot.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.6",
+    "node-ts-dev": "^1.0.0"
   }
 }
