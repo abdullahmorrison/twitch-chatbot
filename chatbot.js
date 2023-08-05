@@ -170,6 +170,5 @@ const client = new tmi.client(opts)
 
 client.on('message', onMessageHandler)
 client.on('connected', onConnectedHandler)
-client.on('disconnected', onDisconnectedHandler)
 
 client.connect()
