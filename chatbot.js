@@ -28,7 +28,11 @@ const blacklist = [
   'quickfinesse'
 ]
 
+let isOnCooldown = false
+
 function onMessageHandler (target, context, msg, self) {
+  if(isOnCooldown) return
+
   for(let i = 0; i < blacklist.length; i++) //no commands for blacklisted users
     if(context.username === blacklist[i])
       return
@@ -82,14 +86,17 @@ function createPyramid(channel, emote, pyramidSize){
 }
 
 const catFact = async (channel)=>{
+  isOnCooldown = true
   const url = 'https://catfact.ninja/fact'
   const response = await fetch(url)
   const json = await response.json()
   setTimeout(()=>{
     client.say(channel, json.fact)
+    isOnCooldown = false
   }, 2000)
 }
 const joke = async (channel)=>{
+  isOnCooldown = true
   const url = 'https://official-joke-api.appspot.com/random_joke'
   const response = await fetch(url)
   const json = await response.json()
@@ -98,42 +105,51 @@ const joke = async (channel)=>{
   }, 2000)
   setTimeout(()=>{
     client.say(channel, json.punchline)
+    isOnCooldown = false
   }, 10000)
 }
 const dogImage = async (channel)=>{
+  isOnCooldown = true
   const url = 'https://dog.ceo/api/breeds/image/random'
   const response = await fetch(url)
   const json = await response.json()
   setTimeout(()=>{
     client.say(channel, json.message)
+    isOnCooldown = false
   }
   , 2000)
 }
 const catImage = async (channel)=>{
+  isOnCooldown = true
   const url = 'https://api.thecatapi.com/v1/images/search'
   const response = await fetch(url)
   const json = await response.json()
   setTimeout(()=>{
     client.say(channel, json[0].url)
+    isOnCooldown = false
   }
   , 2000)
 }
 const randomFact = async (channel)=>{
+  isOnCooldown = true
   const url = 'https://uselessfacts.jsph.pl/random.json?language=en'
   const response = await fetch(url)
   const json = await response.json()
   setTimeout(()=>{
     client.say(channel, json.text)
+    isOnCooldown = false
   }
   , 2000)
 }
 const deezNuts = (channel)=>{
+  isOnCooldown = true
   let random = Math.floor(Math.random() * deezNutsJokes.length)
   setTimeout(()=>{
     client.say(channel, deezNutsJokes[random].prompt)
   }, 2000)
   setTimeout(()=>{
     client.say(channel, deezNutsJokes[random].response + " GotEEM")
+    isOnCooldown = false
   }, 10000)
 }
 
