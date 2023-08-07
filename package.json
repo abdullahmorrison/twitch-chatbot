@@ -1,8 +1,9 @@
 {
   "dependencies": {
+    "@twurple/chat": "^7.0.1",
     "dotenv": "^16.3.1",
     "node-fetch": "^2.6.12",
-    "tmi.js": "^1.8.5"
+    "twitch-pubsub-client": "^4.6.7"
   },
   "scripts": {
     "start": "ts-node-dev src/index.ts"
