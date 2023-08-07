@@ -7,14 +7,35 @@ import blacklist from './data/blacklist.json'
 import channels from './data/channels.json'
 
 export let chatClient: ChatClient
+
 async function main(){
   const authProvider = new StaticAuthProvider(process.env.TWITCH_CLIENT_ID as string, process.env.TWITCH_OAUTH_TOKEN as string)
+
   chatClient = new ChatClient({authProvider, channels: channels});
-  await chatClient.connect()
   chatClient.onMessage((channel, user, message)=>onMessageHandler(channel, user, message))
-  console.log('\x1b[32m%s\x1b[0m', 'Bot is now online')
+  chatClient.onConnect(() => onConnectedHandler(chatClient.irc.currentNick, chatClient.irc.port))
+  chatClient.onDisconnect((_, reason) => onDisconnectedHandler(reason))
+  await chatClient.connect()
+
+  const refreshAuthProvider = new RefreshingAuthProvider({
+    clientId: process.env.TWITCH_CLIENT_ID as string,
+    clientSecret: process.env.TWITCH_CLIENT_SECRET as string,
+  })
+  await refreshAuthProvider.addUserForToken({
+    accessToken: process.env.TWITCH_ACCESS_TOKEN as string,
+    refreshToken: process.env.TWITCH_REFRESH_TOKEN as string,
+    expiresIn: null,
+    obtainmentTimestamp: 0
+  }, ['chat'])
 }
 main()
+
+function onConnectedHandler(addr: string, port: number) {
+  console.log('\x1b[32m%s\x1b[0m', `* Connected to ${addr}:${port}`)
+}
+function onDisconnectedHandler(reason: Error | undefined) {
+  console.log('\x1b[31m%s\x1b[0m', `* Disconnected from server: ${reason? reason : 'Unknown'}`)
+}
 
 let isOnCooldown = false
 async function onMessageHandler(channel: string, user: string, msg: string) {
