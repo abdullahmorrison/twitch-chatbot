@@ -1,16 +1,12 @@
 {
-  "dependencies": {
-    "@twurple/chat": "^7.0.1",
-    "dotenv": "^16.3.1",
-    "node-fetch": "^2.6.12",
-    "twitch-pubsub-client": "^4.6.7"
-  },
   "scripts": {
     "start": "ts-node-dev src/index.ts"
   },
+  "workspaces": [
+    "apps/client",
+    "apps/server"
+  ],
   "devDependencies": {
-    "@types/node-fetch": "^2.6.4",
-    "@types/tmi.js": "^1.8.3",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.1.6"
   }
