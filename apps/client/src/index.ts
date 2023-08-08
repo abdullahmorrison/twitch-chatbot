@@ -8,11 +8,12 @@ import { client } from './trpcClient'
 
 export let chatClient: ChatClient
 
+let token = ""
 async function main(){
   console.log('\x1b[36m%s\x1b[0m', 'Starting bot...')
 
   const data = await client.accessToken.query()
-  const token = data[0].token
+  token = data[0].token
   const authProvider = new StaticAuthProvider(process.env.TWITCH_CLIENT_ID as string, token)
 
   chatClient = new ChatClient({authProvider, channels: channels});
@@ -32,6 +33,15 @@ async function main(){
     expiresIn: null,
     obtainmentTimestamp: 0
   }, ['chat'])
+  refreshAuthProvider.onRefresh(async ()=>{
+    const response = await fetch('https://id.twitch.tv/oauth2/token?grant_type=refresh_token&refresh_token=' 
+      + process.env.TWITCH_REFRESH_TOKEN 
+      + '&client_id=' + process.env.TWITCH_CLIENT_ID 
+      + '&client_secret=' + process.env.TWITCH_CLIENT_SECRET, 
+      { method: 'POST' })
+    const data = await response.json()
+    await client.accessTokenUpdate.mutate(data.access_token)
+  })
 }
 main().catch(console.error)
 
