@@ -17,19 +17,27 @@ const appRouter = t.router({
         if(typeof token === 'string') return token
         throw new Error('invalid token')
     }).mutation(async req=>{
-        const token = new AccessTokenModel({ token: req.input })
-        return await token.save()
+        return AccessTokenModel.findByIdAndUpdate(req.input, { accessToken: req.input }, { upsert: true, new: true })
     }),
 
     userList: t.procedure.query(async ()=>{
         const users = await UserModel.find()
         return users.filter(user=>user.isBlacklisted)
     }),
-    userCreate: t.procedure.input(username=>{
+    userBlacklistCreate: t.procedure.input(username=>{
         if(typeof username === 'string') return username
         throw new Error('invalid user')
     }).mutation(async req =>{
-        const user = new UserModel({ user: req.input })
+        const user = new UserModel({ user: req.input, isBlacklisted: true })
+        return await user.save()
+    }),
+    userBlacklistUpdate: t.procedure.input(username=>{
+        if(typeof username === 'string') return username
+        throw new Error('invalid user')
+    }).mutation(async req=>{
+        const user = await UserModel.findOne({ user: req.input })
+        if(!user) throw new Error('user not found')
+        user.isBlacklisted = !user.isBlacklisted
         return await user.save()
     })
 })
