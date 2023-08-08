@@ -1,17 +1,22 @@
 import 'dotenv/config'
-import fetch from 'node-fetch'
 import { ChatClient } from '@twurple/chat'
 import { StaticAuthProvider, RefreshingAuthProvider } from '@twurple/auth'
 import * as commands from './commands'
 import blacklist from './data/blacklist.json'
 import channels from './data/channels.json'
+import { client } from './trpcClient'
 
 export let chatClient: ChatClient
 
 async function main(){
-  const authProvider = new StaticAuthProvider(process.env.TWITCH_CLIENT_ID as string, process.env.TWITCH_OAUTH_TOKEN as string)
+  console.log('\x1b[36m%s\x1b[0m', 'Starting bot...')
+
+  const data = await client.accessToken.query()
+  const token = data[0].token
+  const authProvider = new StaticAuthProvider(process.env.TWITCH_CLIENT_ID as string, token)
 
   chatClient = new ChatClient({authProvider, channels: channels});
+
   chatClient.onMessage((channel, user, message)=>onMessageHandler(channel, user, message))
   chatClient.onConnect(() => onConnectedHandler(chatClient.irc.currentNick, chatClient.irc.port))
   chatClient.onDisconnect((_, reason) => onDisconnectedHandler(reason))
@@ -22,7 +27,7 @@ async function main(){
     clientSecret: process.env.TWITCH_CLIENT_SECRET as string,
   })
   await refreshAuthProvider.addUserForToken({
-    accessToken: process.env.TWITCH_ACCESS_TOKEN as string,
+    accessToken: token,
     refreshToken: process.env.TWITCH_REFRESH_TOKEN as string,
     expiresIn: null,
     obtainmentTimestamp: 0
@@ -40,7 +45,7 @@ function onDisconnectedHandler(reason: Error | undefined) {
 let isOnCooldown = false
 async function onMessageHandler(channel: string, user: string, msg: string) {
   //no commands if streamer is live or a command is on cooldown
-  if(await isStreamerLive(channel) || isOnCooldown) return 
+  // if(await isStreamerLive(channel) || isOnCooldown) return 
   for(let i = 0; i < blacklist.length; i++) //no commands for blacklisted users
     if(user === blacklist[i]) return
   
