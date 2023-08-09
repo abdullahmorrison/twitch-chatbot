@@ -1,9 +1,9 @@
 import 'dotenv/config'
 import { ChatClient } from '@twurple/chat'
+import { trpcClient } from './trpcClient'
 import { StaticAuthProvider, RefreshingAuthProvider } from '@twurple/auth'
-import channels from './data/channels.json'
-import { client } from './trpcClient'
 import { onConnectedHandler, onDisconnectedHandler, onMessageHandler } from './eventHandlers'
+import channels from './data/channels.json'
 
 export let chatClient: ChatClient
 
@@ -11,7 +11,7 @@ let token = ""
 async function main(){
   console.log('\x1b[36m%s\x1b[0m', 'Starting bot...')
 
-  const data = await client.accessToken.query()
+  const data = await trpcClient.accessToken.query()
   token = data[0].token
   const authProvider = new StaticAuthProvider(process.env.TWITCH_CLIENT_ID as string, token)
 
@@ -39,7 +39,7 @@ async function main(){
       + '&client_secret=' + process.env.TWITCH_CLIENT_SECRET, 
       { method: 'POST' })
     const data = await response.json()
-    token = await client.accessTokenUpdate.mutate(data.access_token) as string
+    token = await trpcClient.accessTokenUpdate.mutate(data.access_token) as string
   })
 }
 main().catch(console.error)
