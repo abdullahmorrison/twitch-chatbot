@@ -47,7 +47,7 @@ const app = express()
 app.use('/', createExpressMiddleware({ router: appRouter }))
 
 const port = process.env.PORT || 3000
-connect(process.env.MONGO_URI as string, { dbName: process.env.DB_NAME })
+connect(process.env.MONGO_URL as string, { dbName: process.env.DB_NAME })
     .then(()=>{ app.listen(port, ()=>{ console.log(`Server started on port ${port}`) })})
     .catch(err=>{ console.error(err) })
 
