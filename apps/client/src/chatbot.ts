@@ -49,7 +49,7 @@ async function main(){
   const eventListener = new EventSubWsListener({ apiClient })
   eventListener.start()
 
-  const streamLiveListener = await eventListener.onStreamOnline('twitch', (e: { channelName: string })=>onStreamerOnline(e.channelName))
-  const streamOfflineListener = await eventListener.onStreamOffline('twitch', (e: { channelName: string; })=> onStreamerOffline(e.channelName))
+  // const streamLiveListener = await eventListener.onStreamOnline('twitch', (e: { channelName: string })=>onStreamerOnline(e.channelName))
+  // const streamOfflineListener = await eventListener.onStreamOffline('twitch', (e: { channelName: string; })=> onStreamerOffline(e.channelName))
 }
 main().catch(console.error)
