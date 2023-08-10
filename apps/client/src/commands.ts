@@ -1,4 +1,4 @@
-import { chatClient } from '.'
+import { chatClient } from './chatbot'
 import deezNutsJokes from './data/deeznuts.json'
 
 export function createPyramid(channel: string, emote: string, pyramidSize: number){
