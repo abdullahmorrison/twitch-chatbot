@@ -8,39 +8,34 @@ export function onDisconnectedHandler(reason: Error | undefined) {
   console.log('\x1b[31m%s\x1b[0m', `* Disconnected from server: ${reason? reason : 'Unknown'}`)
 }
 
-let isOnCooldown = false
+let lastMessage = Date.now()
 export async function onMessageHandler(channel: string, user: string, msg: string) {
-  //no commands if streamer is live or a command is on cooldown
-  if(isOnCooldown) return 
   for(let i = 0; i < blacklist.length; i++) //no commands for blacklisted users
     if(user === blacklist[i]) return
   
-  isOnCooldown = true
   switch(msg.split(' ')[0]){
     case '!catfact':
-      await commands.catFact(channel).then(() => isOnCooldown = false)
+      await commands.catFact(channel)
       break
     case '!lemon':
       commands.createPyramid(channel, 'Lemon ', 4)
-      setTimeout(() => isOnCooldown = false, 10000)
       break
     case '!tellmeajoke':
-      await commands.joke(channel).then(() => isOnCooldown = false)
+      await commands.joke(channel)
       break
     case '!dogimage':
-      await commands.dogImage(channel).then(() => isOnCooldown = false)
+      await commands.dogImage(channel)
       break
     case '!catimage':
-      await commands.catImage(channel).then(() => isOnCooldown = false)
+      await commands.catImage(channel)
       break
     case '!randomfact':
-      await commands.randomFact(channel).then(() => isOnCooldown = false)
+      await commands.randomFact(channel)
       break
     case '!dn':
-      await commands.deezNuts(channel).then(() => isOnCooldown = false)
+      await commands.deezNuts(channel)
       break
     default:
-      isOnCooldown = false
       break
   }
 }
