@@ -26,6 +26,7 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
       break
     case '!tellmeajoke':
       await commands.joke(channel).then(() => isOnCooldown = false)
+      break
     case '!dogimage':
       await commands.dogImage(channel).then(() => isOnCooldown = false)
       break
@@ -37,6 +38,7 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
       break
     case '!dn':
       await commands.deezNuts(channel).then(() => isOnCooldown = false)
+      break
     default:
       isOnCooldown = false
       break
