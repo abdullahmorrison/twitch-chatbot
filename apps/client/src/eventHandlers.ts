@@ -17,9 +17,6 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
     case '!catfact':
       await commands.catFact(channel)
       break
-    case '!lemon':
-      commands.createPyramid(channel, 'Lemon ', 4)
-      break
     case '!tellmeajoke':
       await commands.joke(channel)
       break

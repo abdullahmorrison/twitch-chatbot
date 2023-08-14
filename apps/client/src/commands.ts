@@ -15,25 +15,6 @@ function withCooldown(command: (channel: string, ...args: any[]) => Promise<void
   }
 }
 
-export const createPyramid = withCooldown(async (channel: string, emote: string, pyramidSize: number)=>{
-  let count = 1
-  let down = false
-  let interval = setInterval(() => {
-    if(count <= pyramidSize && !down){
-      chatClient.say(channel, emote.repeat(count))
-      count++
-      if(count === pyramidSize){
-        down = true
-      }
-    }else if(count > 0 && down){
-      chatClient.say(channel, emote.repeat(count))
-      count--
-    }else {
-      clearInterval(interval)
-    }
-  }, 1500)
-}, 1.5*5)
-
 export const catFact = withCooldown(async (channel: string)=>{
   const result = await fetch('https://catfact.ninja/fact').then(response => response.json())
   setTimeout(()=>{
