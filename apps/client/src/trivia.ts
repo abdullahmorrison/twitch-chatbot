@@ -27,12 +27,28 @@ const askQuestion = async (channel: string, qNum: number) => {
     await delaySeconds(30)
     chatClient.say(channel, "The correct answer is.... " + answerArray.filter((answer: string) => answer.includes(result[0].correctAnswer)))
 }
+const giveGameInstructions = async (channel: string, numQuestions: number) => {
+        await delaySeconds(5)
+        chatClient.say(channel, "You will be asked "+numQuestions+" multiple choice questions.") 
+        await delaySeconds(5)
+        chatClient.say(channel, "You will have 30 seconds to answer each question.") 
+        await delaySeconds(5)
+        chatClient.say(channel, "Answer each question with a letter. Anyone who answers correctly will get a 100 points.")
+        await delaySeconds(5)
+        chatClient.say(channel, "The person with the most points at the end of the game will win a prize! 🎁")
+        await delaySeconds(5)
+}
 
 const startTrivia = async (channel: string) => {
-    const numQuestions = 3
     try{
+        const numQuestions = 3
+
         await delaySeconds(2)
         chatClient.say(channel, "Welcome to... 🌟Abdullah Morrison's Trivia Game Show!🌟 ")
+
+        await giveGameInstructions(channel, numQuestions)
+
+        chatClient.say(channel, "ARE YOU READY!!!???")
         await delaySeconds(5)
 
         //Type !join to join the game
