@@ -15,13 +15,18 @@ function withCooldown(command: (channel: string, ...args: any[]) => Promise<void
   }
 }
 
-export const catFact = withCooldown(async (channel: string)=>{
+const abdullahCommands = withCooldown(async (channel :string) => {
+  setTimeout(() => {
+    chatClient.say(channel, "MrDestructoid my bot commands 👉 "+ Object.keys(commandList).join(', '))
+  }, 2000)
+})  
+const catFact = withCooldown(async (channel: string)=>{
   const result = await fetch('https://catfact.ninja/fact').then(response => response.json())
   setTimeout(()=>{
     chatClient.say(channel, result.fact)
   }, 2000)
 })
-export const joke = withCooldown(async (channel: string)=>{
+const joke = withCooldown(async (channel: string)=>{
   const result = await fetch('https://official-joke-api.appspot.com/random_joke').then(response => response.json())
   setTimeout(()=>{
     chatClient.say(channel, result.setup)
@@ -30,25 +35,25 @@ export const joke = withCooldown(async (channel: string)=>{
     chatClient.say(channel, result.punchline)
   }, 10000)
 }, 10)
-export const dogImage = withCooldown(async (channel: string)=>{
+const dogImage = withCooldown(async (channel: string)=>{
   const result = await fetch('https://dog.ceo/api/breeds/image/random').then(response => response.json())
   setTimeout(()=>{
     chatClient.say(channel, result.message)
   }, 2000)
 })
-export const catImage = withCooldown(async (channel: string)=>{
+const catImage = withCooldown(async (channel: string)=>{
   const result = await fetch('https://api.thecatapi.com/v1/images/search').then(response => response.json())
   setTimeout(()=>{
     chatClient.say(channel, result[0].url)
   }, 2000)
 })
-export const randomFact = withCooldown(async (channel: string)=>{
+const randomFact = withCooldown(async (channel: string)=>{
   const result = await fetch('https://uselessfacts.jsph.pl/random.json?language=en').then(response => response.json())
   setTimeout(()=>{
     chatClient.say(channel, result.text)
   }, 2000)
 })
-export const deezNuts = withCooldown(async (channel: string)=>{
+const deezNuts = withCooldown(async (channel: string)=>{
   let random = Math.floor(Math.random() * deezNutsJokes.length)
   setTimeout(()=>{
     chatClient.say(channel, deezNutsJokes[random].prompt)
@@ -58,7 +63,7 @@ export const deezNuts = withCooldown(async (channel: string)=>{
   }, 10000)
 }, 10)
 
-export function countUpTo(number: number, channel: string, emote: string){
+function countUpTo(number: number, channel: string, emote: string){
   let count = 2001
   let interval = setInterval(() => {
     if(count <= number){
@@ -69,3 +74,17 @@ export function countUpTo(number: number, channel: string, emote: string){
     }
   }, 2500)
 }
+
+interface CommandList {
+  [key: string]: (channel: string, user: string, args: string[]) => Promise<void>
+}
+const commandList: CommandList = {
+  '!abdullahcommands': abdullahCommands,
+  '!tellmeajoke': joke,
+  '!randomfact': randomFact,
+  '!dn': deezNuts,
+  '!catfact': catFact,
+  '!catimage': catImage,
+  '!dogimage': dogImage
+}
+export default commandList
