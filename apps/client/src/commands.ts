@@ -1,7 +1,8 @@
 import { chatClient } from './chatbot'
 import deezNutsJokes from './data/deeznuts.json'
+import startTrivia from './trivia'
 
-function withCooldown(command: (channel: string, ...args: any[]) => Promise<void>, cooldownTimeSeconds: number = 2) {
+export function withCooldown(command: (channel: string, ...args: any[]) => Promise<void>, cooldownTimeSeconds: number = 2) {
   let isOnCooldown = false
 
   return async (channel: string, ...args: any[]) => {
@@ -20,6 +21,9 @@ const abdullahCommands = withCooldown(async (channel :string) => {
     chatClient.say(channel, "MrDestructoid my bot commands 👉 "+ Object.keys(commandList).join(', '))
   }, 2000)
 })  
+const trivia = async (channel: string) => {
+  await startTrivia(channel)
+}
 const catFact = withCooldown(async (channel: string)=>{
   const result = await fetch('https://catfact.ninja/fact').then(response => response.json())
   setTimeout(()=>{
@@ -79,6 +83,7 @@ interface CommandList {
   [key: string]: (channel: string, user: string, args: string[]) => Promise<void>
 }
 const commandList: CommandList = {
+  '!quiz': trivia,
   '!abdullahcommands': abdullahCommands,
   '!tellmeajoke': joke,
   '!randomfact': randomFact,
