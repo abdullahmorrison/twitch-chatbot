@@ -17,7 +17,7 @@ const appRouter = t.router({
         if(typeof token === 'string') return token
         throw new Error('invalid token')
     }).mutation(async req=>{
-        return AccessTokenModel.findByIdAndUpdate(req.input, { accessToken: req.input }, { upsert: true, new: true })
+        return AccessTokenModel.findOneAndUpdate({}, { token: req.input })
     }),
 
     userList: t.procedure.query(async ()=>{
