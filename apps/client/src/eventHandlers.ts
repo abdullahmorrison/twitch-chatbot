@@ -1,4 +1,3 @@
-import blacklist from './data/blacklist.json'
 import  commandList from './commands'
 
 export function onConnectedHandler(addr: string, port: number) {
@@ -9,9 +8,6 @@ export function onDisconnectedHandler(reason: Error | undefined) {
 }
 
 export async function onMessageHandler(channel: string, user: string, msg: string) {
-  for(let i = 0; i < blacklist.length; i++) //no commands for blacklisted users
-    if(user === blacklist[i]) return
-  
   if(msg[0] === '!') {
     const commandName = msg.split(' ')[0]
     const args = msg.split(' ').slice(1)
