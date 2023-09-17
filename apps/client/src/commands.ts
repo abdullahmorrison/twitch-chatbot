@@ -1,8 +1,9 @@
 import { chatClient } from './chatbot'
 import deezNutsJokes from './data/deeznuts.json'
 
+let isOnCooldown: boolean
 function withCooldown(command: (channel: string, ...args: any[]) => Promise<void>, cooldownTimeSeconds: number = 2) {
-  let isOnCooldown = false
+  isOnCooldown = false
 
   return async (channel: string, ...args: any[]) => {
     if (isOnCooldown) return
