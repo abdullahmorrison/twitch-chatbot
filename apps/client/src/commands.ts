@@ -1,22 +1,20 @@
 import { chatClient } from './chatbot'
 import deezNutsJokes from './data/deeznuts.json'
 
-let isOnCooldown: boolean
+const isOnCooldown: Set<string> = new Set()
 function withCooldown(command: (channel: string, ...args: any[]) => Promise<void>, cooldownTimeSeconds: number = 2) {
-  isOnCooldown = false
-
   return async (channel: string, ...args: any[]) => {
-    if (isOnCooldown) return
-    isOnCooldown = true
+    if (isOnCooldown.has(channel)) return
+    isOnCooldown.add(channel)
     
     await command(channel, ...args)
     setTimeout(() => {
-      isOnCooldown = false
+      isOnCooldown.delete(channel)
     }, cooldownTimeSeconds*1000)
   }
 }
 
-const abdullahCommands = withCooldown(async (channel :string) => {
+const abdullahCommands = withCooldown(async (channel: string) => {
   setTimeout(() => {
     chatClient.say(channel, "MrDestructoid my bot commands 👉 "+ Object.keys(commandList).join(', '))
   }, 2000)
