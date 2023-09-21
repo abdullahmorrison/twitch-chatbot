@@ -11,9 +11,9 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
   if(msg[0] === '!') {
     const commandName = msg.split(' ')[0]
     const args = msg.split(' ').slice(1)
-    if(commandName in commandList) {
+    if(commandName in commandList && (!commandList[commandName].exclusiveChannels || commandList[commandName].exclusiveChannels?.includes(channel))) {
       try {
-        await commandList[commandName](channel, user, args)
+        await commandList[commandName].func(channel, user, args) 
       } catch(e) {
         console.log(e)
       }

@@ -16,7 +16,8 @@ function withCooldown(command: (channel: string, ...args: any[]) => Promise<void
 
 const abdullahCommands = withCooldown(async (channel: string) => {
   setTimeout(() => {
-    chatClient.say(channel, "MrDestructoid my bot commands 👉 "+ Object.keys(commandList).join(', '))
+    chatClient.say(channel, "MrDestructoid my bot commands 👉 "+ 
+      Object.keys(commandList).filter(command => !commandList[command].exclusiveChannels || commandList[command].exclusiveChannels?.includes(channel)).join(', '))
   }, 2000)
 })  
 const catFact = withCooldown(async (channel: string)=>{
@@ -61,6 +62,12 @@ const deezNuts = withCooldown(async (channel: string)=>{
     chatClient.say(channel, deezNutsJokes[random].response + " GotEEM")
   }, 10000)
 }, 10)
+const recipe = withCooldown(async (channel: string)=>{
+  const result = await fetch('https://themealdb.com/api/json/v1/1/random.php').then(response => response.json())
+  setTimeout(()=>{
+    chatClient.say(channel, result.meals[0].strMeal+ " " + (result.meals[0].strSource? result.meals[0].strSource : result.meals[0].strYoutube))
+  }, 2000)
+})
 
 function countUpTo(number: number, channel: string, emote: string){
   let count = 2001
@@ -75,15 +82,16 @@ function countUpTo(number: number, channel: string, emote: string){
 }
 
 interface CommandList {
-  [key: string]: (channel: string, user: string, args: string[]) => Promise<void>
+  [key: string]: { func: (channel: string, user: string, args: string[]) => Promise<void>, exclusiveChannels?: string[] }
 }
 const commandList: CommandList = {
-  '!abdullahcommands': abdullahCommands,
-  '!tellmeajoke': joke,
-  '!randomfact': randomFact,
-  '!dn': deezNuts,
-  '!catfact': catFact,
-  '!catimage': catImage,
-  '!dogimage': dogImage
+  '!abdullahcommands': {func: abdullahCommands},
+  '!tellmeajoke': {func: joke},
+  '!randomfact': {func: randomFact},
+  '!dn': {func: deezNuts},
+  '!catfact': {func: catFact},
+  '!catimage': {func: catImage},
+  '!dogimage': {func: dogImage},
+  '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
 }
 export default commandList
