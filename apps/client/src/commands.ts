@@ -65,7 +65,7 @@ const deezNuts = withCooldown(async (channel: string)=>{
 const recipe = withCooldown(async (channel: string)=>{
   const result = await fetch('https://themealdb.com/api/json/v1/1/random.php').then(response => response.json())
   setTimeout(()=>{
-    chatClient.say(channel, result.meals[0].strMeal+ " " + (result.meals[0].strSource? result.meals[0].strSource : result.meals[0].strYoutube))
+    chatClient.say(channel, "4WeirdChef "+ result.meals[0].strMeal+ " " + (result.meals[0].strSource? result.meals[0].strSource : result.meals[0].strYoutube))
   }, 2000)
 })
 
