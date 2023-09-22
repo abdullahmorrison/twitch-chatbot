@@ -64,8 +64,9 @@ const deezNuts = withCooldown(async (channel: string)=>{
 }, 10)
 const recipe = withCooldown(async (channel: string)=>{
   const result = await fetch('https://themealdb.com/api/json/v1/1/random.php').then(response => response.json())
+  const tiktokURL = new URL(encodeURI('https://www.tiktok.com/search?q='+result.meals[0].strMeal+' recipe'))
   setTimeout(()=>{
-    chatClient.say(channel, "4WeirdChef "+ result.meals[0].strMeal+ " " + (result.meals[0].strSource? result.meals[0].strSource : result.meals[0].strYoutube))
+    chatClient.say(channel, "4WeirdChef "+ result.meals[0].strMeal+ " " + tiktokURL)
   }, 2000)
 })
 
@@ -92,6 +93,6 @@ const commandList: CommandList = {
   '!catfact': {func: catFact},
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
-  '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
+  '!recipe': {func: recipe, exclusiveChannels: ['brittt', 'abdullahmorrison']},
 }
 export default commandList
