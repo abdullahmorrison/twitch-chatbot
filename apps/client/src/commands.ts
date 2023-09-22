@@ -38,7 +38,7 @@ const joke = withCooldown(async (channel: string)=>{
 const dogImage = withCooldown(async (channel: string)=>{
   const result = await fetch('https://random.dog/woof.json').then(response => response.json())
   setTimeout(()=>{
-    chatClient.say(channel, result.message)
+    chatClient.say(channel, result.url)
   }, 2000)
 })
 const catImage = withCooldown(async (channel: string)=>{
