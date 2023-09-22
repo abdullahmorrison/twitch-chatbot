@@ -93,6 +93,6 @@ const commandList: CommandList = {
   '!catfact': {func: catFact},
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
-  '!recipe': {func: recipe, exclusiveChannels: ['brittt', 'abdullahmorrison']},
+  '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
 }
 export default commandList
