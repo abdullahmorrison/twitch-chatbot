@@ -23,34 +23,34 @@ const abdullahCommands = withCooldown(async (channel: string) => {
 const catFact = withCooldown(async (channel: string)=>{
   const result = await fetch('https://catfact.ninja/fact').then(response => response.json())
   setTimeout(()=>{
-    chatClient.say(channel, result.fact)
+    chatClient.say(channel, "CoolCat "+result.fact)
   }, 2000)
 })
 const joke = withCooldown(async (channel: string)=>{
   const result = await fetch('https://official-joke-api.appspot.com/random_joke').then(response => response.json())
   setTimeout(()=>{
-    chatClient.say(channel, result.setup)
+    chatClient.say(channel, "PepeLaugh "+result.setup)
   }, 2000)
   setTimeout(()=>{
-    chatClient.say(channel, result.punchline)
+    chatClient.say(channel, result.punchline+ " GotEEM")
   }, 10000)
 }, 10)
 const dogImage = withCooldown(async (channel: string)=>{
   const result = await fetch('https://random.dog/woof.json').then(response => response.json())
   setTimeout(()=>{
-    chatClient.say(channel, result.url)
+    chatClient.say(channel, "OhMyDog "+ result.url)
   }, 2000)
 })
 const catImage = withCooldown(async (channel: string)=>{
   const result = await fetch('https://api.thecatapi.com/v1/images/search').then(response => response.json())
   setTimeout(()=>{
-    chatClient.say(channel, result[0].url)
+    chatClient.say(channel, "CoolCat "+result[0].url)
   }, 2000)
 })
 const randomFact = withCooldown(async (channel: string)=>{
   const result = await fetch('https://uselessfacts.jsph.pl/random.json?language=en').then(response => response.json())
   setTimeout(()=>{
-    chatClient.say(channel, result.text)
+    chatClient.say(channel, "NerdL "+result.text)
   }, 2000)
 })
 const deezNuts = withCooldown(async (channel: string)=>{
