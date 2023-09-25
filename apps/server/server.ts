@@ -1,3 +1,4 @@
+import { LinkModel } from './models/link';
 import { initTRPC } from '@trpc/server';
 import { createExpressMiddleware } from '@trpc/server/adapters/express'
 import 'dotenv/config'
@@ -18,6 +19,23 @@ const appRouter = t.router({
         throw new Error('invalid token')
     }).mutation(async req=>{
         return AccessTokenModel.findOneAndUpdate({}, { token: req.input })
+    }),
+    
+    linkList: t.procedure.query(async ()=>{
+        return await LinkModel.find()
+    }),
+    linkCreate: t.procedure.input(url=>{
+        if(typeof url === 'string') return url
+        throw new Error('invalid url')
+    }).mutation(async req=>{
+        if(await LinkModel.findOne({ url: req.input })) return
+
+        const link = new LinkModel({ url: req.input })
+        return await link.save()
+    }),
+    linkRandom: t.procedure.query(async ()=>{
+        const links = await LinkModel.find()
+        return links[Math.floor(Math.random() * links.length)]
     }),
 
     userList: t.procedure.query(async ()=>{
