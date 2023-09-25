@@ -9,12 +9,11 @@ import channels from './data/channels.json'
 
 export let chatClient: ChatClient
 
-let token = ""
 async function main(){
   console.log('\x1b[36m%s\x1b[0m', 'Starting bot...')
 
   const data = await trpcClient.accessToken.query()
-  token = data[0].token
+  const token = data[0].token
 
   const authProvider = new RefreshingAuthProvider({
     clientId: process.env.TWITCH_CLIENT_ID as string,
