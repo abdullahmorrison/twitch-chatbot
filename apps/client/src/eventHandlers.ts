@@ -1,4 +1,5 @@
 import  commandList from './commands'
+import { trpcClient } from './trpcClient';
 
 export function onConnectedHandler(addr: string, port: number) {
   console.log('\x1b[32m%s\x1b[0m', `* Connected to ${addr}:${port}`)
@@ -18,6 +19,11 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
         console.log(e)
       }
     }
+  }else if(channel=='erobb221' && msg.includes('streamable.com') || msg.includes('clips.twitch.tv')) {//save links pasted in erobb's chat
+    if(user == 'oldmanburger') return //this guy links gross stuff
+
+    const link = msg.split(' ').filter(str => str.includes('https://'))
+    trpcClient.linkCreate.mutate(link[0])
   }
 }
 
