@@ -1,5 +1,6 @@
 import { chatClient } from './chatbot'
 import deezNutsJokes from './data/deeznuts.json'
+import { trpcClient } from './trpcClient'
 
 const isOnCooldown: Set<string> = new Set()
 function withCooldown(command: (channel: string, ...args: any[]) => Promise<void>, cooldownTimeSeconds: number = 2) {
@@ -69,6 +70,13 @@ const recipe = withCooldown(async (channel: string)=>{
     chatClient.say(channel, "4WeirdChef "+ result.meals[0].strMeal+ " " + tiktokURL)
   }, 2000)
 })
+const erobbLink = withCooldown(async (channel: string)=>{
+  const result = await trpcClient.linkRandom.query()
+  const resultObj = result as { url: string }
+  setTimeout(()=>{
+    chatClient.say(channel, "Lemon "+resultObj.url)
+  }, 2000)
+})
 
 function countUpTo(number: number, channel: string, emote: string){
   let count = 2001
@@ -94,5 +102,6 @@ const commandList: CommandList = {
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
+  '!erobblink': {func: erobbLink}
 }
 export default commandList
