@@ -64,7 +64,7 @@ const deezNuts = withCooldown(async (channel: string)=>{
 }, 10)
 const recipe = withCooldown(async (channel: string)=>{
   const result = await fetch('https://themealdb.com/api/json/v1/1/random.php').then(response => response.json())
-  const tiktokURL = new URL(encodeURI('https://www.tiktok.com/search?q='+result.meals[0].strMeal+' recipe'))
+  const tiktokURL = new URL('https://www.tiktok.com/search?q='+encodeURIComponent(result.meals[0].strMeal+' recipe'))
   setTimeout(()=>{
     chatClient.say(channel, "4WeirdChef "+ result.meals[0].strMeal+ " " + tiktokURL)
   }, 2000)
