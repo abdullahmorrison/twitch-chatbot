@@ -20,6 +20,7 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
       }
     }
   }else if(channel=='erobb221' && msg.includes('streamable.com') || msg.includes('clips.twitch.tv')) {//save links pasted in erobb's chat
+    if(user == 'abdullahmorrisonbot') return //this is me
     if(user == 'oldmanburger') return //this guy links gross stuff
 
     const link = msg.split(' ').filter(str => str.includes('https://'))
