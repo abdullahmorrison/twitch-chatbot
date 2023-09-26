@@ -19,12 +19,20 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
         console.log(e)
       }
     }
-  }else if(channel=='erobb221' && msg.includes('streamable.com') || msg.includes('clips.twitch.tv')) {//save links pasted in erobb's chat
+  }else if(channel=='abdullahmorrison'
+          && msg.includes('streamable.com') 
+          || msg.includes('clips.twitch.tv') 
+          || msg.includes('youtube.com/clip/')) {//save links pasted in erobb's chat
     if(user == 'abdullahmorrisonbot') return //this is me
-    if(user == 'oldmanburger') return //this guy links gross stuff
+    if(user == 'oldmanburger' || user == 'transerobber') return //these guys link gross stuff
 
     const link = msg.split(' ').filter(str => str.includes('https://'))
-    trpcClient.linkCreate.mutate(link[0])
+    try{
+      trpcClient.linkCreate.mutate(link[0])
+    }catch(e){
+      console.log(link[0])
+      console.log(e)
+    }
   }
 }
 
