@@ -102,6 +102,6 @@ const commandList: CommandList = {
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
-  '!erobblink': {func: erobbLink}
+  '!erobblink': {func: erobbLink, exclusiveChannels: ['erobb221']},
 }
 export default commandList
