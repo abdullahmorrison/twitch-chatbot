@@ -8,6 +8,7 @@ export function onDisconnectedHandler(reason: Error | undefined) {
   console.log('\x1b[31m%s\x1b[0m', `* Disconnected from server: ${reason? reason : 'Unknown'}`)
 }
 
+//TODO: send the link to delete to the command
 export async function onMessageHandler(channel: string, user: string, msg: string) {
   if(msg[0] === '!') {
     const commandName = msg.split(' ')[0]
