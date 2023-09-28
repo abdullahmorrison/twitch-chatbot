@@ -19,7 +19,7 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
         console.log(e)
       }
     }
-  }else if(channel=='abdullahmorrison'
+  }else if(channel=='erobb221'
           && msg.includes('streamable.com') 
           || msg.includes('clips.twitch.tv') 
           || msg.includes('youtube.com/clip/')) {//save links pasted in erobb's chat
