@@ -78,18 +78,6 @@ const erobbLink = withCooldown(async (channel: string)=>{
   }, 2000)
 })
 
-function countUpTo(number: number, channel: string, emote: string){
-  let count = 2001
-  let interval = setInterval(() => {
-    if(count <= number){
-      chatClient.say(channel, emote+' '+count)
-      count++
-    }else {
-      clearInterval(interval)
-    }
-  }, 2500)
-}
-
 interface CommandList {
   [key: string]: { func: (channel: string, user: string, args: string[]) => Promise<void>, exclusiveChannels?: string[] }
 }
