@@ -70,22 +70,22 @@ const recipe = withCooldown(async (channel: string)=>{
     chatClient.say(channel, "4WeirdChef "+ result.meals[0].strMeal+ " " + tiktokURL)
   }, 2000)
 })
-const erobbLink = withCooldown(async (channel: string)=>{
-  let result = await trpcClient.linkRandom.query()
-  let resultObj = result as { url: string }
+// const erobbLink = withCooldown(async (channel: string)=>{
+//   let result = await trpcClient.linkRandom.query()
+//   let resultObj = result as { url: string }
   
-  let response = await fetch(resultObj.url)//check the url does not return a 404
-  while(response.status == 404){
-    await trpcClient.linkDelete.mutate(resultObj.url)
-    result = await trpcClient.linkRandom.query()
-    resultObj = result as { url: string }
-    response = await fetch(resultObj.url)
-  }
+//   let response = await fetch(resultObj.url)//check the url does not return a 404
+//   while(response.status == 404){
+//     await trpcClient.linkDelete.mutate(resultObj.url)
+//     result = await trpcClient.linkRandom.query()
+//     resultObj = result as { url: string }
+//     response = await fetch(resultObj.url)
+//   }
   
-  setTimeout(()=>{
-    chatClient.say(channel, "Lemon "+resultObj.url)
-  }, 2000)
-})
+//   setTimeout(()=>{
+//     chatClient.say(channel, "Lemon "+resultObj.url)
+//   }, 2000)
+// })
 const removelink = withCooldown(async (channel: string, user: string, link: string)=>{
   setTimeout(async ()=>{
     if(user != 'abdullahmorrison'){
@@ -111,7 +111,7 @@ const commandList: CommandList = {
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
-  '!erobblink': {func: erobbLink, exclusiveChannels: ['erobb221']},
+  // '!erobblink': {func: erobbLink, exclusiveChannels: ['erobb221']},
   '!removelink': {func: removelink}
 }
 export default commandList
