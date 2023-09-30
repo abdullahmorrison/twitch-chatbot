@@ -71,8 +71,17 @@ const recipe = withCooldown(async (channel: string)=>{
   }, 2000)
 })
 const erobbLink = withCooldown(async (channel: string)=>{
-  const result = await trpcClient.linkRandom.query()
-  const resultObj = result as { url: string }
+  let result = await trpcClient.linkRandom.query()
+  let resultObj = result as { url: string }
+  
+  let response = await fetch(resultObj.url)//check the url does not return a 404
+  while(response.status == 404){
+    await trpcClient.linkDelete.mutate(resultObj.url)
+    result = await trpcClient.linkRandom.query()
+    resultObj = result as { url: string }
+    response = await fetch(resultObj.url)
+  }
+  
   setTimeout(()=>{
     chatClient.say(channel, "Lemon "+resultObj.url)
   }, 2000)
