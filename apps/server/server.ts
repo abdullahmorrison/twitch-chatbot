@@ -37,6 +37,14 @@ const appRouter = t.router({
         const links = await LinkModel.find()
         return links[Math.floor(Math.random() * links.length)]
     }),
+    linkDelete: t.procedure.input(url=>{
+        if(typeof url === 'string') return url
+        throw new Error('invalid url')
+    }).mutation(async req=>{
+        const result = await LinkModel.findOneAndRemove({ url: req.input })
+        if(result) return true
+        return false
+    }),
 
     userList: t.procedure.query(async ()=>{
         const users = await UserModel.find()
