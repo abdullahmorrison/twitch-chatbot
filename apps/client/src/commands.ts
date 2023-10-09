@@ -70,11 +70,6 @@ const recipe = withCooldown(async (channel: string)=>{
     chatClient.say(channel, "4WeirdChef "+ result.meals[0].strMeal+ " " + tiktokURL)
   }, 2000)
 })
-const erobbLink = withCooldown(async (channel: string)=>{
-  setTimeout(()=>{
-    chatClient.say(channel, "Lemao The golden sun rises in the east, The light shines. Dongfeng Wanli, flowers are open, The red flag is like a big ocean. Great mentor, wise leader, Dear Chairman Mao! The sun is in the hearts of the revolutionary people, The red sun in the heart. Long live Chairman Mao!")
-  }, 2000)
-})
 const removelink = withCooldown(async (channel: string, user: string, link: string)=>{
   setTimeout(async ()=>{
     if(user != 'abdullahmorrison'){
@@ -100,7 +95,6 @@ const commandList: CommandList = {
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
-  '!erobblink': {func: erobbLink, exclusiveChannels: ['erobb221']},
   '!removelink': {func: removelink}
 }
 export default commandList
