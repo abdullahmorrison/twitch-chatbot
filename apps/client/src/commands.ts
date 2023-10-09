@@ -73,18 +73,6 @@ const recipe = withCooldown(async (channel: string)=>{
     chatClient.say(channel, "4WeirdChef "+ result.meals[0].strMeal+ " " + tiktokURL)
   }, 2000)
 })
-const removelink = withCooldown(async (channel: string, user: string, link: string)=>{
-  setTimeout(async ()=>{
-    if(user != 'abdullahmorrison'){
-      chatClient.say(channel, "arnoldHalt Only @AbdullahMorrison can remove links!")      
-    }else{
-      const result = await trpcClient.linkDelete.mutate(link)
-
-      if(!result) chatClient.say(channel, "MrDestructoid Link not found!")
-      else chatClient.say(channel, "MrDestructoid Link removed!")
-    }
-  }, 2000)
-})
 
 interface CommandList {
   [key: string]: { func: (channel: string, user: string, args: string[]) => Promise<void>, exclusiveChannels?: string[] }
@@ -98,6 +86,5 @@ const commandList: CommandList = {
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
-  '!removelink': {func: removelink}
 }
 export default commandList
