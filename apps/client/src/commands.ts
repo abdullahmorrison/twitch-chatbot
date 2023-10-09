@@ -49,7 +49,10 @@ const catImage = withCooldown(async (channel: string)=>{
   }, 2000)
 })
 const randomFact = withCooldown(async (channel: string)=>{
-  const result = await fetch('https://uselessfacts.jsph.pl/random.json?language=en').then(response => response.json())
+  let result = await fetch('https://uselessfacts.jsph.pl/random.json?language=en').then(response => response.json())
+  while(result.text.length > 200){
+    result = await fetch('https://uselessfacts.jsph.pl/random.json?language=en').then(response => response.json())
+  }
   setTimeout(()=>{
     chatClient.say(channel, "NerdL "+result.text)
   }, 2000)
