@@ -29,7 +29,8 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
 
     const link = msg.split(' ').filter(str => str.includes('https://'))
     try{
-      trpcClient.linkCreate.mutate(link[0])
+      if(link[0]) 
+        trpcClient.linkCreate.mutate(link[0])
     }catch(e){
       console.log(link[0])
       console.log(e)
