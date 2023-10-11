@@ -5,6 +5,7 @@ import 'dotenv/config'
 import { connect } from 'mongoose'
 import { AccessTokenModel } from './models/access'
 import { UserModel } from './models/user'
+import cors from 'cors'
 
 import express from 'express'
 
@@ -84,6 +85,17 @@ const appRouter = t.router({
 })
 
 const app = express()
+
+const whitelist = process.env.CORS_WHITELIST?.split(',')
+app.use(cors({
+    origin: function (origin: any, callback: any) {
+        if (whitelist && whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    }
+}))
 
 app.use('/', createExpressMiddleware({ router: appRouter }))
 
