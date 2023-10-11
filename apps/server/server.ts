@@ -6,6 +6,7 @@ import { connect } from 'mongoose'
 import { AccessTokenModel } from './models/access'
 import { UserModel } from './models/user'
 import cors from 'cors'
+import { z } from 'zod'
 
 import express from 'express'
 
@@ -15,20 +16,16 @@ const appRouter = t.router({
     accessToken: t.procedure.query(async ()=>{
         return await AccessTokenModel.find()
     }),
-    accessTokenUpdate: t.procedure.input(token=>{
-        if(typeof token === 'string') return token
-        throw new Error('invalid token')
-    }).mutation(async req=>{
+    accessTokenUpdate: t.procedure.input(
+        z.string()
+    ).mutation(async req=>{
         return AccessTokenModel.findOneAndUpdate({}, { token: req.input })
     }),
     
     linkList: t.procedure.query(async ()=>{
         return await LinkModel.find()
     }),
-    linkCreate: t.procedure.input(url=>{
-        if(typeof url === 'string') return url
-        throw new Error('invalid url')
-    }).mutation(async req=>{
+    linkCreate: t.procedure.input(z.string()).mutation(async req=>{
         if(await LinkModel.findOne({ url: req.input })) return
 
         const link = new LinkModel({ url: req.input })
@@ -42,21 +39,20 @@ const appRouter = t.router({
         const links = await LinkModel.find({ safteyStatus: 'unknown' })
         return links[Math.floor(Math.random() * links.length)]
     }),
-    linkUpdateSafetyStatus: t.procedure.input(input => {
-        if (typeof input === 'object' && input !== null && 'id' in input && 'status' in input && typeof input.id === 'string' && ['safe', 'unsafe', 'unknown'].includes(input.status as string)) {
-            return input;
-        }
-        throw new Error('invalid input');
-    }).mutation(async req => {
+    linkUpdateSafetyStatus: t.procedure.input(
+        z.object({
+            id: z.string(),
+            safetyStatus: z.enum(['safe', 'unsafe', 'unknown'])
+        })
+    ).mutation(async req => {
         const link = await LinkModel.findById(req.input.id);
         if (!link) throw new Error('link not found');
-        link.safteyStatus = req.input.status as 'safe' | 'unsafe' | 'unknown';
+        link.safteyStatus = req.input.safetyStatus as 'safe' | 'unsafe' | 'unknown';
         return await link.save();
     }),
-    linkDelete: t.procedure.input(url=>{
-        if(typeof url === 'string') return url
-        throw new Error('invalid url')
-    }).mutation(async req=>{
+    linkDelete: t.procedure.input(
+        z.string()
+    ).mutation(async req=>{
         const result = await LinkModel.findOneAndRemove({ url: req.input })
         if(result) return true
         return false
@@ -66,17 +62,15 @@ const appRouter = t.router({
         const users = await UserModel.find()
         return users.filter(user=>user.isBlacklisted)
     }),
-    userBlacklistCreate: t.procedure.input(username=>{
-        if(typeof username === 'string') return username
-        throw new Error('invalid user')
-    }).mutation(async req =>{
+    userBlacklistCreate: t.procedure.input(
+        z.string()
+    ).mutation(async req =>{
         const user = new UserModel({ user: req.input, isBlacklisted: true })
         return await user.save()
     }),
-    userBlacklistUpdate: t.procedure.input(username=>{
-        if(typeof username === 'string') return username
-        throw new Error('invalid user')
-    }).mutation(async req=>{
+    userBlacklistUpdate: t.procedure.input(
+        z.string()
+    ).mutation(async req=>{
         const user = await UserModel.findOne({ user: req.input })
         if(!user) throw new Error('user not found')
         user.isBlacklisted = !user.isBlacklisted
