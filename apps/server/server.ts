@@ -37,6 +37,21 @@ const appRouter = t.router({
         const links = await LinkModel.find()
         return links[Math.floor(Math.random() * links.length)]
     }),
+    linkRandomUnlabelled: t.procedure.query(async ()=>{
+        const links = await LinkModel.find({ safteyStatus: 'unknown' })
+        return links[Math.floor(Math.random() * links.length)]
+    }),
+    linkUpdateSafetyStatus: t.procedure.input(input => {
+        if (typeof input === 'object' && input !== null && 'id' in input && 'status' in input && typeof input.id === 'string' && ['safe', 'unsafe', 'unknown'].includes(input.status as string)) {
+            return input;
+        }
+        throw new Error('invalid input');
+    }).mutation(async req => {
+        const link = await LinkModel.findById(req.input.id);
+        if (!link) throw new Error('link not found');
+        link.safteyStatus = req.input.status as 'safe' | 'unsafe' | 'unknown';
+        return await link.save();
+    }),
     linkDelete: t.procedure.input(url=>{
         if(typeof url === 'string') return url
         throw new Error('invalid url')
@@ -72,7 +87,7 @@ const app = express()
 
 app.use('/', createExpressMiddleware({ router: appRouter }))
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3001
 connect(process.env.MONGO_URL as string, { dbName: process.env.DB_NAME })
     .then(()=>{ app.listen(port, ()=>{ console.log(`Server started on port ${port}`) })})
     .catch(err=>{ console.error(err) })
