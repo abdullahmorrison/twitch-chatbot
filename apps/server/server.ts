@@ -80,14 +80,21 @@ const appRouter = t.router({
 
 const app = express()
 
-const whitelist = process.env.CORS_WHITELIST?.split(',')
+const whitelist = process.env.CORS_WHITELIST?.split(',') || []
+
 app.use(cors({
     origin: function (origin: any, callback: any) {
-        if (whitelist && whitelist.indexOf(origin) !== -1) {
-            callback(null, true)
-        } else {
-            callback(new Error('Not allowed by CORS'))
+        if (!origin) {
+            // Requests without an origin are allowed (e.g. curl requests)
+            return callback(null, true)
         }
+        if (whitelist.indexOf(origin) !== -1) {
+            // Origin is already in the whitelist
+            return callback(null, true)
+        }
+        // Add the origin to the whitelist
+        whitelist.push(origin)
+        callback(null, true)
     }
 }))
 
