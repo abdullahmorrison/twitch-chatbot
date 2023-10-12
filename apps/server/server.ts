@@ -55,6 +55,16 @@ const appRouter = t.router({
         link.safteyStatus = req.input.safetyStatus as 'safe' | 'unsafe' | 'unknown';
         return await link.save();
     }),
+    linkUpdateTags: t.procedure.input(
+        z.object({
+            id: z.string(),
+            tags: z.array(z.string())
+        })
+    ).mutation(async req => {
+        const link = await LinkModel.findByIdAndUpdate(req.input.id, { tags: req.input.tags });
+        if(!link) throw new Error('link not found');
+        return link
+    }),
     linkDelete: t.procedure.input(
         z.string()
     ).mutation(async req=>{
