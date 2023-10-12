@@ -11,6 +11,11 @@ const linkSchema = new Schema({
         required: true,
         enum: ['safe', 'unsafe', 'unknown'],
         default: 'unknown'
+    },
+    tags: {
+        type: [String],
+        required: true,
+        default: []
     }
 })
 
