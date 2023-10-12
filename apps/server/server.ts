@@ -32,13 +32,18 @@ const appRouter = t.router({
         return await link.save()
     }),
     linkRandom: t.procedure.query(async ()=>{
-        const links = await LinkModel.find()
-        return links[Math.floor(Math.random() * links.length)]
+        const links = await LinkModel.aggregate([
+            { $sample: { size: 1 } }
+        ])
+        return links[0]
     }),
     linkRandomUnlabelled: t.procedure.query(async ()=>{
-        const links = await LinkModel.find({ safteyStatus: 'unknown' })
-        return links[Math.floor(Math.random() * links.length)]
-    }),
+        const links = await LinkModel.aggregate([
+            { $match: { safteyStatus: { $eq: null } } },
+            { $sample: { size: 1 } }
+        ])
+        return links[0]
+   }),
     linkUpdateSafetyStatus: t.procedure.input(
         z.object({
             id: z.string(),
