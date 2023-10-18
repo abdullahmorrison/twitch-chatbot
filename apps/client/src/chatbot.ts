@@ -26,8 +26,10 @@ async function main(){
     obtainmentTimestamp: 0
   }, ['chat'])
   authProvider.onRefresh(async (_, newTokenData)=>{
-    console.log('\x1b[36m%s\x1b[0m', 'Token Refreshed')
+    console.log('\x1b[36m%s\x1b[0m', 'Saving new token...')
     await trpcClient.accessTokenUpdate.mutate(newTokenData.accessToken)
+      .then(()=>console.log('\x1b[36m%s\x1b[0m', 'Token saved!'))
+      .catch(()=>console.log('\x1b[31m%s\x1b[0m', 'Error saving token: '+newTokenData))
   })
 
   chatClient = new ChatClient({authProvider, channels: channels});
