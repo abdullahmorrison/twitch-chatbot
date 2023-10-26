@@ -19,7 +19,7 @@ const appRouter = t.router({
     accessTokenUpdate: t.procedure.input(
         z.string()
     ).mutation(async req=>{
-        return AccessTokenModel.findOneAndUpdate({}, { token: req.input })
+        return AccessTokenModel.findOneAndUpdate({}, {$set: { token: req.input }})
     }),
     
     linkList: t.procedure.query(async ()=>{
