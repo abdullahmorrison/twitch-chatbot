@@ -39,7 +39,7 @@ const appRouter = t.router({
     }),
     linkRandomUnlabelled: t.procedure.query(async ()=>{
         const links = await LinkModel.aggregate([
-            { $match: { safteyStatus: { $eq: null } } },
+            { $match: { safteyStatus: { $eq: "unknown" } } },
             { $sample: { size: 1 } }
         ])
         return links[0]
