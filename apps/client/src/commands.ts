@@ -1,6 +1,6 @@
 import { chatClient } from './chatbot'
 import deezNutsJokes from './data/deeznuts.json'
-import { trpcClient } from './trpcClient'
+import whyisbritttnotlive from './data/whyisbritttnotlive.json'
 
 const isOnCooldown: Set<string> = new Set()
 function withCooldown(command: (channel: string, ...args: any[]) => Promise<void>, cooldownTimeSeconds: number = 2) {
@@ -73,6 +73,11 @@ const recipe = withCooldown(async (channel: string)=>{
     chatClient.say(channel, "4WeirdChef "+ result.meals[0].strMeal+ " " + tiktokURL)
   }, 2000)
 })
+const whyIsBritttNotLive = withCooldown(async (channel: string)=>{
+  setTimeout(()=>{
+    chatClient.say(channel, "Texime "+whyisbritttnotlive[Math.floor(Math.random() * whyisbritttnotlive.length)])
+  }, 2000)
+})
 
 interface CommandList {
   [key: string]: { func: (channel: string, user: string, args: string[]) => Promise<void>, exclusiveChannels?: string[] }
@@ -86,5 +91,6 @@ const commandList: CommandList = {
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
+  '!whyisbritttnotlive': {func: whyIsBritttNotLive, exclusiveChannels: ['brittt']}
 }
 export default commandList
