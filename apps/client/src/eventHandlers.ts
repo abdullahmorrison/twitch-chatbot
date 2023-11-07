@@ -1,4 +1,4 @@
-import  commandList from './commands'
+import  commandList,  { commandAliasList } from './commands'
 import { trpcClient } from './trpcClient';
 
 export function onConnectedHandler(addr: string, port: number) {
@@ -11,8 +11,12 @@ export function onDisconnectedHandler(reason: Error | undefined) {
 //TODO: send the link to delete to the command
 export async function onMessageHandler(channel: string, user: string, msg: string) {
   if(msg[0] === '!') {
-    const commandName = msg.split(' ')[0]
+    let commandName = msg.split(' ')[0]
     const args = msg.split(' ').slice(1)
+
+    if(commandAliasList.has(commandName)) commandName = commandAliasList.get(commandName) || "" //if command is an alias, get the actual command name
+       
+    // check if command exists in commandList AND that command is not exclusive to another channel OR that the command is exclusive the channel the command was sent in
     if(commandName in commandList && (!commandList[commandName].exclusiveChannels || commandList[commandName].exclusiveChannels?.includes(channel))) {
       try {
         await commandList[commandName].func(channel, user, args) 

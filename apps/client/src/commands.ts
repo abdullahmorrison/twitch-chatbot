@@ -79,9 +79,25 @@ const whyIsBritttNotLive = withCooldown(async (channel: string)=>{
   }, 2000)
 })
 
-interface CommandList {
-  [key: string]: { func: (channel: string, user: string, args: string[]) => Promise<void>, exclusiveChannels?: string[] }
+interface Command {
+  func: (channel: string, user: string, args: string[]) => Promise<void>,
+  exclusiveChannels?: string[],
 }
+interface CommandList {
+  [key: string]: Command
+}
+export const commandAliasList = new Map<string, string>(
+  [
+    ['!joke', '!tellmeajoke'],
+    ['!fact', '!randomfact'],
+    ['!cat', '!catimage'],
+    ['!catpic', '!catimage'],
+    ['!dog', '!dogimage'],
+    ['!dogpic', '!dogimage'],
+    ['!recipes', '!recipe'],
+    ['!whyisbrittnotlive', '!whyisbritttnotlive'],
+  ]
+)
 const commandList: CommandList = {
   '!abdullahcommands': {func: abdullahCommands},
   '!tellmeajoke': {func: joke},
