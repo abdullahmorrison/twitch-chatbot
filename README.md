@@ -8,6 +8,7 @@ A chatbot that queries multiple free APIs to tell jokes, fun facts, and link fun
 
 ### Twitch Channels Connected to the Chatbot
 If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatbot/edit/main/README.md#chatbot-commands) in these channels' chatrooms, the bot will get triggered
+- [abdullahmorrison](https://twitch.tv/abdullahmorrison) (my twitch channel, used for testing)
 - [erobb221](https://twitch.tv/erobb221)
 - [Brittt](https://twitch.tv/brittt)
 - [zomballr](https://twitch.tv/zomballr) (he requested that I add the bot to his channel)
