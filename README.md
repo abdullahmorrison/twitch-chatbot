@@ -2,18 +2,17 @@
 ![GitHub issues](https://img.shields.io/github/issues/abdullahmorrison/twitch-chatbot)
 ![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/abdullahmorrison/twitch-chatbot)
 
-
-
 A chatbot that queries multiple free APIs to tell jokes, fun facts, and link fun images for Twitch chatters to enjoy! It also saves links that other chatters paste into the chat to a self-hosted MongoDB database.
 
+# Usage
 ### Twitch Channels Connected to the Chatbot
-If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatbot/edit/main/README.md#chatbot-commands) in these channels' chatrooms, the bot will get triggered
+If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatbot#chatbot-commands) in these channels' chatrooms, the bot will get triggered
 - [abdullahmorrison](https://twitch.tv/abdullahmorrison) (my twitch channel, used for testing)
 - [erobb221](https://twitch.tv/erobb221)
 - [Brittt](https://twitch.tv/brittt)
 - [zomballr](https://twitch.tv/zomballr) (he requested that I add the bot to his channel)
 
-## Chatbot Commands
+### Chatbot Commands
 - `!abdullahcommands`: displays the list of commands a user can type to trigger the chatbot
 - `!tellmeajoke`: Tells a random joke by making a `GET` request to [official-joke-api.appspot.com/random_joke](https://official-joke-api.appspot.com/random_joke)
 - `!randomfact`: Tells a random fact by making a `GET` request to [uselessfacts.jsph.pl](https://uselessfacts.jsph.pl/)
