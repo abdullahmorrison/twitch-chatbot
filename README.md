@@ -1,4 +1,7 @@
 # Abdullah's Twitch Chatbot
+![GitHub issues](https://img.shields.io/github/issues/abdullahmorrison/abdullahmorrison%2Ftwitch-chatbot)
+
+
 A chatbot that queries multiple free APIs to tell jokes, fun facts, and link fun images for Twitch chatters to enjoy! It also saves links that other chatters paste into the chat to a self-hosted MongoDB database.
 
 ### Twitch Channels Connected to the Chatbot
