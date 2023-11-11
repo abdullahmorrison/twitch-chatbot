@@ -5,6 +5,9 @@
 A chatbot that queries multiple free APIs to tell jokes, fun facts, and link fun images for Twitch chatters to enjoy! It also saves links that other chatters paste into the chat to a self-hosted MongoDB database.
 
 # Usage
+
+You need to have a Twitch account in order to type in a Twitch chat. Some channels require that you follow the channel or have a verified account to type in their chat. Login to Twitch and type [a command](https://github.com/abdullahmorrison/twitch-chatbot#chatbot-commands) in one of the [channels the bot is connected to](https://github.com/abdullahmorrison/twitch-chatbot#twitch-channels-connected-to-the-chatbot).
+
 ### Twitch Channels Connected to the Chatbot
 If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatbot#chatbot-commands) in these channels' chatrooms, the bot will get triggered
 - [abdullahmorrison](https://twitch.tv/abdullahmorrison) (my twitch channel, used for testing)
