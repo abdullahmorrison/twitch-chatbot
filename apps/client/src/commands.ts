@@ -8,7 +8,13 @@ function withCooldown(command: (channel: string, ...args: any[]) => Promise<void
     if (isOnCooldown.has(channel)) return
     isOnCooldown.add(channel)
     
-    await command(channel, ...args)
+    try{
+      await command(channel, ...args)
+    }catch(e){
+      setTimeout(() => {
+        chatClient.say(channel, "Command failed! @AbdullahMorrison sucks at coding") 
+      }, 2000);
+    }
     setTimeout(() => {
       isOnCooldown.delete(channel)
     }, cooldownTimeSeconds*1000)
