@@ -28,6 +28,10 @@ If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatb
 ### [Brittt](https://twitch.tv/brittt):
 - `!recipe`: Brittt usually cooks during her streams. This command gives her ideas on what she can cook by making a `GET` request to [themealdb.com](https://themealdb.com/api.php) to get a random recipe and pasting a TikTok-search URL to that recipe in chat so she can view the instructions on how to make it on TikTok (she loves finding recipes through TikTok).
 - `!whyisbritttnotlive`: Tells a random excuse about why Brittt is not streaming today by querying a JSON file [in the codebase](https://github.com/abdullahmorrison/twitch-chatbot/blob/main/apps/client/src/data/whyisbritttnotlive.json) that contains a list of the many excuses she uses to explain why she is not streaming today.
+  - If Britt types the command herself, the bot says this:
+      <img src="https://github.com/abdullahmorrison/twitch-chatbot/assets/49528805/502dec33-30d5-4acd-a6d2-7f204a4a29cf" width=600/>
+
+
 
 # Demo
 Example Commands           | Used in a Live Twitch Stream
