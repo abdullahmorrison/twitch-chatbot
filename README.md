@@ -34,9 +34,12 @@ If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatb
 
 
 # Demo
-Example Commands           | Used in a Live Twitch Stream
+**#1 Context:** I am typing bot commands into my channel.
+
+ **#2 Context:** Chatters are typing the `!dn` command which triggers my bot `@AbdullahMorrisonBot` to tell a "deez nuts" joke. The chatters are responding with the emote [GotEEM](https://7tv.app/emotes/62872732dcdfd1fbbebf80c7) to show that they are laughing.
+#1 Example Commands        |  #2 Used in a Live Twitch Stream
 :-------------------------:|:-------------------------:
-<video src="https://github.com/abdullahmorrison/TwitchChatBot/assets/49528805/80f9da2d-023e-4d68-97dc-7cbca528f49a"/> | <video src="https://github.com/abdullahmorrison/twitch-chatbot/assets/49528805/1e050776-fdc7-4750-82c1-db29af3e832c"/>
+<video src="https://github.com/abdullahmorrison/TwitchChatBot/assets/49528805/80f9da2d-023e-4d68-97dc-7cbca528f49a" /> | <video src="https://github.com/abdullahmorrison/twitch-chatbot/assets/49528805/1e050776-fdc7-4750-82c1-db29af3e832c"/> 
 
 # Architecture Diagram
 ![image](https://github.com/abdullahmorrison/twitch-chatbot/assets/49528805/28e8aebd-6bfa-4037-8871-b95fba4771bc)
