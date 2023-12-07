@@ -100,6 +100,7 @@ export const commandAliasList = new Map<string, string>(
     ['!joke', '!tellmeajoke'],
     ['!fact', '!randomfact'],
     ['!cat', '!catimage'],
+    ['!lokifact', '!catfact'],
     ['!catpic', '!catimage'],
     ['!dog', '!dogimage'],
     ['!dogpic', '!dogimage'],
