@@ -28,11 +28,18 @@ If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatb
 ### [Brittt](https://twitch.tv/brittt):
 - `!recipe`: Brittt usually cooks during her streams. This command gives her ideas on what she can cook by making a `GET` request to [themealdb.com](https://themealdb.com/api.php) to get a random recipe and pasting a TikTok-search URL to that recipe in chat so she can view the instructions on how to make it on TikTok (she loves finding recipes through TikTok).
 - `!whyisbritttnotlive`: Tells a random excuse about why Brittt is not streaming today by querying a JSON file [in the codebase](https://github.com/abdullahmorrison/twitch-chatbot/blob/main/apps/client/src/data/whyisbritttnotlive.json) that contains a list of the many excuses she uses to explain why she is not streaming today.
+  - If Britt types the command herself, the bot says this:
+      <img src="https://github.com/abdullahmorrison/twitch-chatbot/assets/49528805/502dec33-30d5-4acd-a6d2-7f204a4a29cf" width=600/>
+
+
 
 # Demo
-Example Commands           | Used in a Live Twitch Stream
+**#1 Context:** I am typing bot commands into my channel.
+
+ **#2 Context:** Chatters are typing the `!dn` command which triggers my bot `@AbdullahMorrisonBot` to tell a "deez nuts" joke. The chatters are responding with the emote [GotEEM](https://7tv.app/emotes/62872732dcdfd1fbbebf80c7) to show that they are laughing.
+#1 Example Commands        |  #2 Used in a Live Twitch Stream
 :-------------------------:|:-------------------------:
-<video src="https://github.com/abdullahmorrison/TwitchChatBot/assets/49528805/80f9da2d-023e-4d68-97dc-7cbca528f49a"/> | <video src="https://github.com/abdullahmorrison/twitch-chatbot/assets/49528805/1e050776-fdc7-4750-82c1-db29af3e832c"/>
+<video src="https://github.com/abdullahmorrison/TwitchChatBot/assets/49528805/80f9da2d-023e-4d68-97dc-7cbca528f49a" /> | <video src="https://github.com/abdullahmorrison/twitch-chatbot/assets/49528805/1e050776-fdc7-4750-82c1-db29af3e832c"/> 
 
 # Architecture Diagram
 ![image](https://github.com/abdullahmorrison/twitch-chatbot/assets/49528805/28e8aebd-6bfa-4037-8871-b95fba4771bc)

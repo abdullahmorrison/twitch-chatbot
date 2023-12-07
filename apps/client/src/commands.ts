@@ -82,7 +82,7 @@ const recipe = withCooldown(async (channel: string)=>{
 const whyIsBritttNotLive = withCooldown(async (channel: string, user: string)=>{
   setTimeout(()=>{
     if(user === 'brittt')
-      chatClient.say(channel, "Texime I'm typing in chat instead of going live (go live arnoldHalt )")
+      chatClient.say(channel, "Texime I'm typing in chat instead of going live (go live FeelsWeirdMan )")
     else
       chatClient.say(channel, "Texime "+whyisbritttnotlive[Math.floor(Math.random() * whyisbritttnotlive.length)])
   }, 2000)
@@ -100,6 +100,7 @@ export const commandAliasList = new Map<string, string>(
     ['!joke', '!tellmeajoke'],
     ['!fact', '!randomfact'],
     ['!cat', '!catimage'],
+    ['!lokifact', '!catfact'],
     ['!catpic', '!catimage'],
     ['!dog', '!dogimage'],
     ['!dogpic', '!dogimage'],
