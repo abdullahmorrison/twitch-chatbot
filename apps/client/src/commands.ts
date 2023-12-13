@@ -120,6 +120,5 @@ const commandList: CommandList = {
   '!dogimage': {func: dogImage},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
   '!whyisbritttnotlive': {func: whyIsBritttNotLive, exclusiveChannels: ['brittt']},
-  '!lokipics': {func: lokiPics, exclusiveChannels: ['brittt']}
 }
 export default commandList
