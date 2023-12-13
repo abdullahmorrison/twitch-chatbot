@@ -27,9 +27,9 @@ const abdullahCommands = withCooldown(async (channel: string) => {
       Object.keys(commandList).filter(command => !commandList[command].exclusiveChannels || commandList[command].exclusiveChannels?.includes(channel)).join(', '))
   }, 2000)
 })  
-const catFact = withCooldown(async (channel: string, user: string)=>{
+const catFact = withCooldown(async (channel: string)=>{
   const result = await fetch('https://catfact.ninja/fact').then(response => response.json())
-  const emote = user === 'brittt' ? 'Logre' : 'CoolCat'
+  const emote = channel === 'brittt' ? 'Logre' : 'CoolCat'
   setTimeout(()=>{
     chatClient.say(channel, emote+" "+result.fact)
   }, 2000)
