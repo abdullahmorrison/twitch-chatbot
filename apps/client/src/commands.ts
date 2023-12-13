@@ -106,6 +106,7 @@ export const commandAliasList = new Map<string, string>(
     ['!dog', '!dogimage'],
     ['!dogpic', '!dogimage'],
     ['!recipes', '!recipe'],
+    ['!tiktokrecipe', '!recipe'],
     ['!whyisbrittnotlive', '!whyisbritttnotlive'],
   ]
 )
@@ -118,6 +119,7 @@ const commandList: CommandList = {
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
-  '!whyisbritttnotlive': {func: whyIsBritttNotLive, exclusiveChannels: ['brittt']}
+  '!whyisbritttnotlive': {func: whyIsBritttNotLive, exclusiveChannels: ['brittt']},
+  '!lokipics': {func: lokiPics, exclusiveChannels: ['brittt']}
 }
 export default commandList
