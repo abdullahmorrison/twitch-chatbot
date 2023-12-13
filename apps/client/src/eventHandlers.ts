@@ -1,5 +1,6 @@
+import { chatClient } from './chatbot'
 import  commandList,  { commandAliasList } from './commands'
-import { trpcClient } from './trpcClient';
+import { trpcClient } from './trpcClient'
 
 export function onConnectedHandler(addr: string, port: number) {
   console.log('\x1b[32m%s\x1b[0m', `* Connected to ${addr}:${port}`)
@@ -39,6 +40,9 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
       console.log(link[0])
       console.log(e)
     }
+  }
+  if(user==='brittt'){//repeat what brittt types in chat
+    chatClient.say(channel, msg)
   }
 }
 
