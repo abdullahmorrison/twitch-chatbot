@@ -42,6 +42,10 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
     }
   }
   if(user==='brittt'){//repeat what brittt types in chat
+    if(msg.includes("I'm 12")){
+      chatClient.say(channel, "@Brittt 🫵 LMAOOOOOOOOOO BANNED")
+      return
+    }
     chatClient.say(channel, msg)
   }
 }
