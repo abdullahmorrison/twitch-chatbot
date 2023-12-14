@@ -41,12 +41,16 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
       console.log(e)
     }
   }
-  if(user==='brittt'){//repeat what brittt types in chat
-    if(msg.includes("I'm 12")){
+  if(user==='brittt'){//repeat what brittt types in chat in a mocking way
+    if(msg.includes("I'm 12")){//bannable phrase
       chatClient.say(channel, "@Brittt 🫵 LMAOOOOOOOOOO BANNED")
       return
     }
-    chatClient.say(channel, msg)
+    let mockMsg = ''
+    for(let i=0; i<msg.length; i++){
+      mockMsg += Math.random() > 0.5 && msg.charAt(i).match(/[a-zA-Z]/) ? msg.charAt(i).toUpperCase() : msg.charAt(i).toLowerCase()
+    }
+    chatClient.say(channel, "FeelsDankMan "+mockMsg)
   }
 }
 
