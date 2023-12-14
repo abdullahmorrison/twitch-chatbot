@@ -9,8 +9,14 @@ export function onDisconnectedHandler(reason: Error | undefined) {
   console.log('\x1b[31m%s\x1b[0m', `* Disconnected from server: ${reason? reason : 'Unknown'}`)
 }
 
+let paused = false
 //TODO: send the link to delete to the command
 export async function onMessageHandler(channel: string, user: string, msg: string) {
+  if(paused) return
+
+  if(user === 'abdullahmorrison' && msg === '!pause') paused = true
+  else if(user === 'abdullahmorrison' && msg === '!unpause') paused = false
+
   if(msg[0] === '!') {
     let commandName = msg.split(' ')[0]
     const args = msg.split(' ').slice(1)
@@ -48,7 +54,7 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
     }
     let mockMsg = ''
     for(let i=0; i<msg.length; i++){
-      mockMsg += Math.random() > 0.5 && msg.charAt(i).match(/[a-zA-Z]/) ? msg.charAt(i).toUpperCase() : msg.charAt(i).toLowerCase()
+      mockMsg += Math.random() > 0.5 ? msg.charAt(i).toUpperCase() : msg.charAt(i).toLowerCase()
     }
     chatClient.say(channel, "FeelsDankMan "+mockMsg)
   }
