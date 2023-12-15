@@ -12,8 +12,14 @@ export function onDisconnectedHandler(reason: Error | undefined) {
 let paused = false
 //TODO: send the link to delete to the command
 export async function onMessageHandler(channel: string, user: string, msg: string) {
-  if(user === 'abdullahmorrison' && msg === '!pause') paused = true
-  else if(user === 'abdullahmorrison' && msg === '!unpause') paused = false
+  if(user === 'abdullahmorrison' && msg === '!pause'){
+    chatClient.say(channel, 'MrDestructoid bot has been paused')
+    paused = true
+  }
+  else if(user === 'abdullahmorrison' && msg === '!unpause'){
+    chatClient.say(channel, 'MrDestructoid bot has been unpaused')
+    paused = false
+  }
 
   if(paused) return
 
