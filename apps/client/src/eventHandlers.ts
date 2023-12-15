@@ -12,10 +12,10 @@ export function onDisconnectedHandler(reason: Error | undefined) {
 let paused = false
 //TODO: send the link to delete to the command
 export async function onMessageHandler(channel: string, user: string, msg: string) {
-  if(paused) return
-
   if(user === 'abdullahmorrison' && msg === '!pause') paused = true
   else if(user === 'abdullahmorrison' && msg === '!unpause') paused = false
+
+  if(paused) return
 
   if(msg[0] === '!') {
     let commandName = msg.split(' ')[0]
