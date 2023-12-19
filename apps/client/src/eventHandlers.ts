@@ -53,7 +53,7 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
       console.log(e)
     }
   }
-  if(user==='brittt'){//repeat what brittt types in chat in a mocking way
+  if(user==='brittt'&& channel!=='brittt'){//repeat what brittt types in chat in a mocking way
     if(msg.includes("I'm 12")){//bannable phrase
       chatClient.say(channel, "@Brittt 🫵 LMAOOOOOOOOOO BANNED")
       return
