@@ -112,7 +112,7 @@ const riddle = withCooldown(async (channel: string)=>{
   }, 2000)
   setTimeout(()=>{
     chatClient.say(channel, result.answer)
-  }, 2000)
+  }, 10000)
 }, 10)
 
 interface Command {
