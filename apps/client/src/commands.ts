@@ -105,6 +105,15 @@ const wouldYouRather = withCooldown(async (channel: string)=>{
     chatClient.say(channel, result.data)
   }, 2000)
 })
+const riddle = withCooldown(async (channel: string)=>{
+  const result = await fetch('https://riddles-api.vercel.app/random').then(response => response.json())
+  setTimeout(()=>{
+    chatClient.say(channel, result.riddle)
+  }, 2000)
+  setTimeout(()=>{
+    chatClient.say(channel, result.answer)
+  }, 2000)
+}, 10)
 
 interface Command {
   func: (channel: string, user: string, args: string[]) => Promise<void>,
@@ -133,6 +142,7 @@ const commandList: CommandList = {
   '!randomfact': {func: randomFact},
   '!dn': {func: deezNuts},
   '!insult': {func: insult},
+  '!riddle': {func: riddle},
   '!catfact': {func: catFact},
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
