@@ -25,7 +25,7 @@ If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatb
 - `!catfact`: Tells a random cat fact by making a `GET` request to [catfact.ninja](https://catfact.ninja/)
 - `!catimage`: Links a random picture of a cat to the chat by making a `GET` request to [api.thecatapi.com](https://api.thecatapi.com/)
 - `!dogimage`: Links a random picture of a dog to the chat by making a `GET` request to [random.dog/woof.json](https://random.dog/woof.json)
-- `!wouldyourather!` : Tells a 'would you rather' question by making a `GET` request to [https://would-you-rather-api.abaanshanid.repl.co/](https://would-you-rather-api.abaanshanid.repl.co/)
+- `!wouldyourather` : Tells a 'would you rather' question by making a `GET` request to [https://would-you-rather-api.abaanshanid.repl.co/](https://would-you-rather-api.abaanshanid.repl.co/)
   
 ### Commands that are Exclusive to a Specific Twitch Channel
 ### [Brittt](https://twitch.tv/brittt):
