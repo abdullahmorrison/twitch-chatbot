@@ -99,6 +99,12 @@ const insult = withCooldown(async (channel: string, _, args: string)=>{
     else chatClient.say(channel, `${result.insult} 4Finger`)
   }, 2000)
 })
+const wouldYouRather = withCooldown(async (channel: string)=>{
+  const result = await fetch('https://would-you-rather-api.abaanshanid.repl.co/').then(response => response.json())
+  setTimeout(()=>{
+    chatClient.say(channel, result.data)
+  }, 2000)
+})
 
 interface Command {
   func: (channel: string, user: string, args: string[]) => Promise<void>,
@@ -126,10 +132,11 @@ const commandList: CommandList = {
   '!tellmeajoke': {func: joke},
   '!randomfact': {func: randomFact},
   '!dn': {func: deezNuts},
+  '!insult': {func: insult},
   '!catfact': {func: catFact},
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
-  '!insult': {func: insult},
+  '!wouldyourather': {func: wouldYouRather},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
   '!whyisbritttnotlive': {func: whyIsBritttNotLive, exclusiveChannels: ['brittt']},
 }
