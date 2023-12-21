@@ -1,5 +1,6 @@
 import { chatClient } from './chatbot'
 import deezNutsJokes from './data/deeznuts.json'
+import lokipics from './data/lokipics.json'
 import whyisbritttnotlive from './data/whyisbritttnotlive.json'
 import compliments from 'cheer-me-up'
 
@@ -122,6 +123,12 @@ const compliment = withCooldown(async (channel: string, _, args: string)=>{
     else chatClient.say(channel, compliments.getCompliment())
   }, 2000)
 })
+const lokipic = withCooldown(async (channel: string)=>{
+  const random = Math.floor(Math.random() * lokipics.length)
+  setTimeout(()=>{
+    chatClient.say(channel, lokipics[random])
+  }, 2000)
+})
 
 interface Command {
   func: (channel: string, user: string, args: string[]) => Promise<void>,
@@ -139,6 +146,7 @@ export const commandAliasList = new Map<string, string>(
     ['!catpic', '!catimage'],
     ['!dog', '!dogimage'],
     ['!dogpic', '!dogimage'],
+    ['!lokiimage', '!lokipic'],
     ['!recipes', '!recipe'],
     ['!tiktokrecipe', '!recipe'],
     ['!whyisbrittnotlive', '!whyisbritttnotlive'],
@@ -158,5 +166,6 @@ const commandList: CommandList = {
   '!wouldyourather': {func: wouldYouRather},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
   '!whyisbritttnotlive': {func: whyIsBritttNotLive, exclusiveChannels: ['brittt']},
+  '!lokipic': {func: lokipic, exclusiveChannels: ['brittt']}
 }
 export default commandList
