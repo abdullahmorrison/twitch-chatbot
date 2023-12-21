@@ -1,6 +1,7 @@
 import { chatClient } from './chatbot'
 import deezNutsJokes from './data/deeznuts.json'
 import whyisbritttnotlive from './data/whyisbritttnotlive.json'
+import compliments from 'cheer-me-up'
 
 const isOnCooldown: Set<string> = new Set()
 function withCooldown(command: (channel: string, ...args: any[]) => Promise<void>, cooldownTimeSeconds: number = 2) {
@@ -114,6 +115,13 @@ const riddle = withCooldown(async (channel: string)=>{
     chatClient.say(channel, result.answer)
   }, 20000)
 }, 20)
+const compliment = withCooldown(async (channel: string, _, args: string)=>{
+  const to = args[0]
+  setTimeout(()=>{
+    if(to) chatClient.say(channel, `${to} ${compliments.getCompliment()}`)
+    else chatClient.say(channel, compliments.getCompliment())
+  }, 2000)
+})
 
 interface Command {
   func: (channel: string, user: string, args: string[]) => Promise<void>,
@@ -142,6 +150,7 @@ const commandList: CommandList = {
   '!randomfact': {func: randomFact},
   '!dn': {func: deezNuts},
   '!insult': {func: insult},
+  '!compliment': {func: compliment},
   '!riddle': {func: riddle},
   '!catfact': {func: catFact},
   '!catimage': {func: catImage},
