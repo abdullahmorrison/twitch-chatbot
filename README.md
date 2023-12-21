@@ -20,9 +20,12 @@ If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatb
 - `!tellmeajoke`: Tells a random joke by making a `GET` request to [official-joke-api.appspot.com/random_joke](https://official-joke-api.appspot.com/random_joke)
 - `!randomfact`: Tells a random fact by making a `GET` request to [uselessfacts.jsph.pl](https://uselessfacts.jsph.pl/)
 - `!dn`: Tells a random "deez nuts" joke by querying a JSON file stored [in the codebase](https://github.com/abdullahmorrison/twitch-chatbot/blob/main/apps/client/src/data/deeznuts.json)
+- `!insult [user]`: Insults [user] by making a `GET` request to [https://evilinsult.com](https://evilinsult.com/generate_insult.php?lang=en&type=json)
+- `!riddle`: Tells a random riddle by making a `GET` request to [https://riddles-api.vercel.app/random](https://riddles-api.vercel.app/random)
 - `!catfact`: Tells a random cat fact by making a `GET` request to [catfact.ninja](https://catfact.ninja/)
 - `!catimage`: Links a random picture of a cat to the chat by making a `GET` request to [api.thecatapi.com](https://api.thecatapi.com/)
 - `!dogimage`: Links a random picture of a dog to the chat by making a `GET` request to [random.dog/woof.json](https://random.dog/woof.json)
+- `!wouldyourather!` : Tells a 'would you rather' question by making a `GET` request to [https://would-you-rather-api.abaanshanid.repl.co/](https://would-you-rather-api.abaanshanid.repl.co/)
   
 ### Commands that are Exclusive to a Specific Twitch Channel
 ### [Brittt](https://twitch.tv/brittt):
