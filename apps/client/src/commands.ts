@@ -88,6 +88,17 @@ const whyIsBritttNotLive = withCooldown(async (channel: string, user: string)=>{
       chatClient.say(channel, "Texime "+whyisbritttnotlive[Math.floor(Math.random() * whyisbritttnotlive.length)])
   }, 2000)
 })
+const insult = withCooldown(async (channel: string, _, args: string)=>{
+  const to = args[0]
+  let result = await fetch('https://evilinsult.com/generate_insult.php?lang=en&type=json').then(response => response.json())
+  while(result.insult.length > 200 || result.insult.includes('&quot;')){
+    result = await fetch('https://evilinsult.com/generate_insult.php?lang=en&type=json').then(response => response.json())
+  }
+  setTimeout(()=>{
+    if(to) chatClient.say(channel, `${to} ${result.insult} 4Finger`)
+    else chatClient.say(channel, `${result.insult} 4Finger`)
+  }, 2000)
+})
 
 interface Command {
   func: (channel: string, user: string, args: string[]) => Promise<void>,
@@ -118,6 +129,7 @@ const commandList: CommandList = {
   '!catfact': {func: catFact},
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
+  '!insult': {func: insult},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
   '!whyisbritttnotlive': {func: whyIsBritttNotLive, exclusiveChannels: ['brittt']},
 }
