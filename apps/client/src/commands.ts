@@ -91,7 +91,7 @@ const whyIsBritttNotLive = withCooldown(async (channel: string, user: string)=>{
   }, 2000)
 })
 const insult = withCooldown(async (channel: string, _, args: string)=>{
-  const to = args[0].replace('@', '')
+  const to = args ? args[0].replace('@', '') : undefined
   let result = await fetch('https://evilinsult.com/generate_insult.php?lang=en&type=json').then(response => response.json())
   while(result.insult.length > 200 || result.insult.includes('&quot;')){
     result = await fetch('https://evilinsult.com/generate_insult.php?lang=en&type=json').then(response => response.json())
@@ -117,7 +117,7 @@ const riddle = withCooldown(async (channel: string)=>{
   }, 20000)
 }, 20)
 const compliment = withCooldown(async (channel: string, _, args: string)=>{
-  const to = args[0].replace('@', '')
+  const to = args ? args[0].replace('@', '') : undefined
   setTimeout(()=>{
     if(to) chatClient.say(channel, `@${to} ${compliments.getCompliment()}`)
     else chatClient.say(channel, compliments.getCompliment())
