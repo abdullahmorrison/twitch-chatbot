@@ -126,7 +126,7 @@ const compliment = withCooldown(async (channel: string, _, args: string)=>{
 const lokipic = withCooldown(async (channel: string)=>{
   const random = Math.floor(Math.random() * lokipics.length)
   setTimeout(()=>{
-    chatClient.say(channel, lokipics[random])
+    chatClient.say(channel, "Logre "+lokipics[random])
   }, 2000)
 })
 
