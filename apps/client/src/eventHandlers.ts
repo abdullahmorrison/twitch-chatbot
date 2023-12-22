@@ -9,6 +9,7 @@ export function onDisconnectedHandler(reason: Error | undefined) {
   console.log('\x1b[31m%s\x1b[0m', `* Disconnected from server: ${reason? reason : 'Unknown'}`)
 }
 
+const usersToMock: Set<string> = new Set()
 let paused = false
 //TODO: send the link to delete to the command
 export async function onMessageHandler(channel: string, user: string, msg: string) {
@@ -53,7 +54,25 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
       console.log(e)
     }
   }
-  if(user==='brittt'&& channel!=='brittt'){//repeat what brittt types in chat in a mocking way
+  if(user==='abdullahmorrison' && msg.startsWith('!mock')){
+    const userToMock = msg.split(' ')[1].toLowerCase()
+    if(userToMock){
+       usersToMock.add(userToMock)
+       chatClient.say(channel, `@${userToMock} has been added to the list of users to mock`)
+    }
+    else chatClient.say(channel, 'You need to specify a user to mock Idiot')
+  }else if(user==='abdullahmorrison' && msg.startsWith('!unmock')){
+    const userToUnmock = msg.split(' ')[1].toLowerCase()
+    if(userToUnmock){
+      if(!usersToMock.has(userToUnmock)) return chatClient.say(channel, `@${userToUnmock} is not being mocked Idiot`)
+      usersToMock.delete(userToUnmock)
+      chatClient.say(channel, `@${userToUnmock} has been removed from the list of users to mock`)
+    }
+    else chatClient.say(channel, 'You need to specify a user to stop mocking Idiot')
+  }else if(user!=='abdullahmorrison' && msg.startsWith('!mock') || msg.startsWith('!unmock')) 
+    chatClient.say(channel, 'only @AbdullahMorrison can do that!')
+
+  if(usersToMock.has(user)){//repeat what brittt types in chat in a mocking way
     if(msg.includes("I'm 12")){//bannable phrase
       chatClient.say(channel, "@Brittt 🫵 LMAOOOOOOOOOO BANNED")
       return
