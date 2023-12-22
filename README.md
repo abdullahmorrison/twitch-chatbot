@@ -49,3 +49,4 @@ If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatb
 
 # Testimonial
 <img src="https://github.com/abdullahmorrison/twitch-chatbot/assets/49528805/522c8658-de8b-42db-92b4-3bf726884774" width=500/>
+<img src="https://github.com/abdullahmorrison/twitch-chatbot/assets/49528805/72666f6f-9d2d-49b7-bcf3-1764c8215f34" align="right" width=800/>
