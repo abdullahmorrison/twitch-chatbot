@@ -90,13 +90,6 @@ const whyIsBritttNotLive = withCooldown(async (channel: string, user: string)=>{
       chatClient.say(channel, "Texime "+whyisbritttnotlive[Math.floor(Math.random() * whyisbritttnotlive.length)])
   }, 2000)
 })
-const insult = withCooldown(async (channel: string, _, args: string)=>{
-  const to = args[0] ? args[0].replace('@', '') : undefined
-  let result = await fetch('https://insult.mattbas.org/api/insult').then(response => response.text())
-  setTimeout(()=>{
-    chatClient.say(channel, to ? `@${to} ${result}` : `${result}`)
-  }, 2000)
-})
 const wouldYouRather = withCooldown(async (channel: string)=>{
   const result = await fetch('https://would-you-rather-api.abaanshanid.repl.co/').then(response => response.json())
   setTimeout(()=>{
@@ -166,7 +159,6 @@ const commandList: CommandList = {
   '!tellmeajoke': {func: joke},
   '!randomfact': {func: randomFact},
   '!dn': {func: deezNuts},
-  '!insult': {func: insult},
   '!compliment': {func: compliment},
   '!riddle': {func: riddle},
   '!catfact': {func: catFact},
