@@ -128,6 +128,19 @@ const lokipic = withCooldown(async (channel: string)=>{
     chatClient.say(channel, "Logre "+lokipics[random])
   }, 2000)
 })
+const fortune = withCooldown(async (channel: string)=>{
+  const result = await fetch('https://fortune-cookie4.p.rapidapi.com/slack', {
+    method: 'GET',
+    headers: {
+      'x-rapidapi-key': process.env.RAPID_API_KEY || '',
+      'x-rapidapi-host': 'fortune-cookie4.p.rapidapi.com'
+    }
+  }).then(response => response.json())
+
+  setTimeout(()=>{
+    chatClient.say(channel, result.text)
+  }, 2000)
+})
 
 interface Command {
   func: (channel: string, user: string, args: string[]) => Promise<void>,
@@ -165,6 +178,8 @@ const commandList: CommandList = {
   '!wouldyourather': {func: wouldYouRather},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
   '!whyisbritttnotlive': {func: whyIsBritttNotLive, exclusiveChannels: ['brittt']},
-  '!lokipic': {func: lokipic, exclusiveChannels: ['brittt']}
+  '!lokipic': {func: lokipic, exclusiveChannels: ['brittt']},
+  '!fortune': {func: fortune}
+
 }
 export default commandList
