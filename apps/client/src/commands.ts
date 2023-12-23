@@ -92,12 +92,9 @@ const whyIsBritttNotLive = withCooldown(async (channel: string, user: string)=>{
 })
 const insult = withCooldown(async (channel: string, _, args: string)=>{
   const to = args[0] ? args[0].replace('@', '') : undefined
-  let result = await fetch('https://evilinsult.com/generate_insult.php?lang=en&type=json').then(response => response.json())
-  while(result.insult.length > 200 || result.insult.includes('&quot;') || result.insult.includes('raping')){ // there was a insult that was too far including 'raping'
-    result = await fetch('https://evilinsult.com/generate_insult.php?lang=en&type=json').then(response => response.json())
-  }
+  let result = await fetch('https://insult.mattbas.org/api/insult').then(response => response.text())
   setTimeout(()=>{
-    chatClient.say(channel, to ? `@${to} ${result.insult}` : `${result.insult}`)
+    chatClient.say(channel, to ? `@${to} ${result}` : `${result}`)
   }, 2000)
 })
 const wouldYouRather = withCooldown(async (channel: string)=>{
