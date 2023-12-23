@@ -21,6 +21,7 @@ If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatb
 - `!randomfact`: Tells a random fact by making a `GET` request to [uselessfacts.jsph.pl](https://uselessfacts.jsph.pl/)
 - `!dn`: Tells a random "deez nuts" joke by querying a JSON file stored [in the codebase](https://github.com/abdullahmorrison/twitch-chatbot/blob/main/apps/client/src/data/deeznuts.json)
 - `!insult [user]`: Insults [user] by making a `GET` request to [https://evilinsult.com](https://evilinsult.com/generate_insult.php?lang=en&type=json)
+- `!compliment [user]`: Compliments [user] by making a query to the [cheer-me-up npm package](https://github.com/gargeesuresh/cheer-me-up)
 - `!riddle`: Tells a random riddle by making a `GET` request to [https://riddles-api.vercel.app/random](https://riddles-api.vercel.app/random)
 - `!catfact`: Tells a random cat fact by making a `GET` request to [catfact.ninja](https://catfact.ninja/)
 - `!catimage`: Links a random picture of a cat to the chat by making a `GET` request to [api.thecatapi.com](https://api.thecatapi.com/)
@@ -49,3 +50,4 @@ If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatb
 
 # Testimonial
 <img src="https://github.com/abdullahmorrison/twitch-chatbot/assets/49528805/522c8658-de8b-42db-92b4-3bf726884774" width=500/>
+<img src="https://github.com/abdullahmorrison/twitch-chatbot/assets/49528805/72666f6f-9d2d-49b7-bcf3-1764c8215f34" align="right" width=800/>
