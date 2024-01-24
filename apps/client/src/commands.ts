@@ -118,7 +118,7 @@ const lokipic = withCooldown(async (channel: string)=>{
     chatClient.say(channel, "Logre "+lokipics[random])
   }, 2000)
 })
-const fortune = withCooldown(async (channel: string)=>{
+const fortune = withCooldown(async (channel: string, user: string)=>{
   const result = await fetch('https://fortune-cookie4.p.rapidapi.com/slack', {
     method: 'GET',
     headers: {
@@ -128,7 +128,7 @@ const fortune = withCooldown(async (channel: string)=>{
   }).then(response => response.json())
 
   setTimeout(()=>{
-    chatClient.say(channel, result.text)
+    chatClient.say(channel, "@"+user+" "+result.text)
   }, 2000)
 })
 
