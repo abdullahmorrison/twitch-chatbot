@@ -131,6 +131,11 @@ const fortune = withCooldown(async (channel: string, user: string)=>{
     chatClient.say(channel, "@"+user+" "+result.text)
   }, 2000)
 })
+const brittWheel = withCooldown(async (channel: string, user: string)=>{
+  setTimeout(()=>{
+    chatClient.say(channel, "@Brittt DinkDonk https://pickerwheel.com/pw?id=AdAdv")
+  }, 2000)
+})
 
 interface Command {
   func: (channel: string, user: string, args: string[]) => Promise<void>,
@@ -152,6 +157,7 @@ export const commandAliasList = new Map<string, string>(
     ['!recipes', '!recipe'],
     ['!tiktokrecipe', '!recipe'],
     ['!whyisbrittnotlive', '!whyisbritttnotlive'],
+    ['!britttwheel', '!brittwheel']
   ]
 )
 const commandList: CommandList = {
@@ -168,7 +174,7 @@ const commandList: CommandList = {
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
   '!whyisbritttnotlive': {func: whyIsBritttNotLive, exclusiveChannels: ['brittt']},
   '!lokipic': {func: lokipic, exclusiveChannels: ['brittt']},
-  '!fortune': {func: fortune}
-
+  '!fortune': {func: fortune},
+  '!brittwheel': {func: brittWheel, exclusiveChannels: ['brittt']} 
 }
 export default commandList
