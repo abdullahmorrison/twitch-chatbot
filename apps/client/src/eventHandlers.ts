@@ -57,13 +57,13 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
     if(filteredMsg.includes('im')||filteredMsg.includes("i'm")||filteredMsg.includes("i am"))
       return
 
-    chatClient.say(channel, "Lemon "+filteredMsg);
+    chatClient.say(channel, "Lemon "+msg);
   }else if(channel=='erobb221' && user=='brittt'){
     let filteredMsg = msg.toLowerCase()
     if(filteredMsg.includes('im')||filteredMsg.includes("i'm")||filteredMsg.includes("i am"))
       return
 
-    chatClient.say(channel, "NAGGING "+filteredMsg);
+    chatClient.say(channel, "NAGGING "+msg);
   }
 }
 
