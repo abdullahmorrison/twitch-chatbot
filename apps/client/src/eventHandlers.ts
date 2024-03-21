@@ -58,7 +58,7 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
       return
 
     chatClient.say(channel, "Lemon "+filteredMsg);
-  }else if(channel=='erobb221' && user=='brittt')
+  }else if(channel=='erobb221' && user=='brittt'){
     let filteredMsg = msg.toLowerCase()
     if(filteredMsg.includes('im')||filteredMsg.includes("i'm")||filteredMsg.includes("i am"))
       return
