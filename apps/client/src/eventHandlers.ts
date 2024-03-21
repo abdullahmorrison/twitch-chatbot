@@ -57,7 +57,7 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
     if(filteredMsg.includes('im')||filteredMsg.includes("i'm")||filteredMsg.includes("i am"))
       return
 
-    chatClient.say(channel, "Lemon "+msg);
+    chatClient.say(channel, "Lemon "+filteredMsg);
   }
 }
 
