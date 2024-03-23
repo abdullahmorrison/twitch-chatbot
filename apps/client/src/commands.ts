@@ -90,12 +90,6 @@ const whyIsBritttNotLive = withCooldown(async (channel: string, user: string)=>{
       chatClient.say(channel, "Texime "+whyisbritttnotlive[Math.floor(Math.random() * whyisbritttnotlive.length)])
   }, 2000)
 })
-const wouldYouRather = withCooldown(async (channel: string)=>{
-  const result = await fetch('https://would-you-rather-api.abaanshanid.repl.co/').then(response => response.json())
-  setTimeout(()=>{
-    chatClient.say(channel, result.data)
-  }, 2000)
-})
 const riddle = withCooldown(async (channel: string)=>{
   const result = await fetch('https://riddles-api.vercel.app/random').then(response => response.json())
   setTimeout(()=>{
@@ -170,7 +164,6 @@ const commandList: CommandList = {
   '!catfact': {func: catFact},
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
-  '!wouldyourather': {func: wouldYouRather},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
   '!whyisbritttnotlive': {func: whyIsBritttNotLive, exclusiveChannels: ['brittt']},
   '!lokipic': {func: lokipic, exclusiveChannels: ['brittt']},
