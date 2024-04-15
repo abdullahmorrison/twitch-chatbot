@@ -130,7 +130,7 @@ const fortune = withCooldown(async (channel: string, user: string)=>{
 })
 const brittWheel = withCooldown(async (channel: string, user: string)=>{
   setTimeout(()=>{
-    chatClient.say(channel, "@Brittt DinkDonk https://pickerwheel.com/pw?id=BEQax")
+    chatClient.say(channel, "@Brittt DinkDonk https://pickerwheel.com/pw?id=RPUaU")
   }, 2000)
 })
 
@@ -154,7 +154,8 @@ export const commandAliasList = new Map<string, string>(
     ['!recipes', '!recipe'],
     ['!tiktokrecipe', '!recipe'],
     ['!whyisbrittnotlive', '!whyisbritttnotlive'],
-    ['!britttwheel', '!brittwheel']
+    ['!britttwheel', '!brittwheel'],
+    ['!wheel', '!brittwheel']
   ]
 )
 const commandList: CommandList = {
