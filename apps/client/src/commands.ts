@@ -133,6 +133,22 @@ const brittWheel = withCooldown(async (channel: string, user: string)=>{
     chatClient.say(channel, "@Brittt DinkDonk https://pickerwheel.com/pw?id=MqGPv")
   }, 2000)
 })
+const erobb221TetrisStats = withCooldown(async (channel: string, user: string)=>{
+  const response = await fetch("https://ch.tetr.io/api/users/wrobb221").then(response=> response.json())
+  const wrobb221Stats = response.data.user
+
+  setTimeout(()=>{
+    if(wrobb221Stats.role == "user"){
+      const rank = wrobb221Stats.league.rank.toUpperCase()
+      const bestRank = wrobb221Stats.league.bestrank.toUpperCase()
+      const gamesplayed = wrobb221Stats.gamesplayed
+      const gameswon = wrobb221Stats.gameswon
+      const winPercentage = Math.round((gameswon/gamesplayed)*100)
+
+      chatClient.say(channel, `(wrobb221) Current Rank: ${rank}, Best Rank: ${bestRank}, Win/Loss: ${gameswon}/${gamesplayed} (${winPercentage}%)`)
+    }
+  }, 2000)
+})
 
 interface Command {
   func: (channel: string, user: string, args: string[]) => Promise<void>,
@@ -172,6 +188,7 @@ const commandList: CommandList = {
   '!whyisbritttnotlive': {func: whyIsBritttNotLive, exclusiveChannels: ['brittt']},
   '!lokipic': {func: lokipic, exclusiveChannels: ['brittt']},
   '!fortune': {func: fortune},
-  '!brittwheel': {func: brittWheel, exclusiveChannels: ['brittt']} 
+  '!brittwheel': {func: brittWheel, exclusiveChannels: ['brittt']},
+  '!tetrio': {func: erobb221TetrisStats, exclusiveChannels: ['erobb221']}
 }
 export default commandList
