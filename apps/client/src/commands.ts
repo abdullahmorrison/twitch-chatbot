@@ -133,20 +133,25 @@ const brittWheel = withCooldown(async (channel: string, user: string)=>{
     chatClient.say(channel, "@Brittt DinkDonk https://pickerwheel.com/pw?id=MqGPv")
   }, 2000)
 })
-const erobb221TetrisStats = withCooldown(async (channel: string, user: string)=>{
-  const response = await fetch("https://ch.tetr.io/api/users/wrobb221").then(response=> response.json())
-  const wrobb221Stats = response.data.user
+const tetrioStats = withCooldown(async (channel: string, _, args: string[])=>{
+  const tetrioUser = args[0]
+  const response = await fetch(`https://ch.tetr.io/api/users/${tetrioUser}`).then(response=> response.json())
+    .catch((e)=> chatClient.say(channel, "user not found"))
+
+  const userStats = response.data.user
 
   setTimeout(()=>{
-    if(wrobb221Stats.role == "user"){
-      const rank = wrobb221Stats.league.rank.toUpperCase()
-      const bestRank = wrobb221Stats.league.bestrank.toUpperCase()
-      const gamesplayed = wrobb221Stats.gamesplayed
-      const gameswon = wrobb221Stats.gameswon
-      const winPercentage = Math.round((gameswon/gamesplayed)*100)
+    if(userStats.role == "user"){
+      const rank = userStats.league.rank?.toUpperCase() || "Unknown"
+      const bestRank = userStats.league.bestrank?.toUpperCase() || "Unknown"
+      const gamesplayed = userStats.gamesplayed
+      const gameswon = userStats.gameswon
+      const winPercentage = Math.round((gameswon/gamesplayed)*100) || 0
 
-      chatClient.say(channel, `(wrobb221) Current Rank: ${rank}, Best Rank: ${bestRank}, Win/Loss: ${gameswon}/${gamesplayed} (${winPercentage}%)`)
-    }
+      chatClient.say(channel, `Autistic (${tetrioUser}) Current Rank: ${rank}, Best Rank: ${bestRank}, Win/Loss: ${gameswon}/${gamesplayed} (${winPercentage}%)`)
+    }else if(userStats.role == "banned"){
+      chatClient.say(channel, `LOSERDANCEBUTFAST (${tetrioUser}) account banned`)
+    }else chatClient.say(channel, `User Role Unknown: ${userStats.role}`)
   }, 2000)
 })
 
@@ -189,6 +194,6 @@ const commandList: CommandList = {
   '!lokipic': {func: lokipic, exclusiveChannels: ['brittt']},
   '!fortune': {func: fortune},
   '!brittwheel': {func: brittWheel, exclusiveChannels: ['brittt']},
-  '!tetrio': {func: erobb221TetrisStats, exclusiveChannels: ['erobb221']}
+  '!tetriostats': {func: tetrioStats, exclusiveChannels: ['erobb221', 'brittt']}
 }
 export default commandList
