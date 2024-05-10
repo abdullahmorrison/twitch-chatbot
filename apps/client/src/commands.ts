@@ -29,6 +29,10 @@ const abdullahCommands = withCooldown(async (channel: string) => {
       Object.keys(commandList).filter(command => !commandList[command].exclusiveChannels || commandList[command].exclusiveChannels?.includes(channel)).join(', '))
   }, 2000)
 })  
+const heartbeat = async (channel: string, user: string) =>{
+  if(user==="abdullahmorrison")
+    chatClient.say(channel, `MrDestructoid @${user} I'm Alive`)
+}
 const catFact = withCooldown(async (channel: string)=>{
   const result = await fetch('https://catfact.ninja/fact').then(response => response.json())
   const emote = channel === 'brittt' ? 'Logre' : 'CoolCat'
@@ -181,6 +185,7 @@ export const commandAliasList = new Map<string, string>(
 )
 const commandList: CommandList = {
   '!abdullahcommands': {func: abdullahCommands},
+  '!heartbeat': {func: heartbeat},
   '!tellmeajoke': {func: joke},
   '!randomfact': {func: randomFact},
   '!dn': {func: deezNuts},
