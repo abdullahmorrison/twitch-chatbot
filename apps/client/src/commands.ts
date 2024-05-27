@@ -134,7 +134,7 @@ const fortune = withCooldown(async (channel: string, user: string)=>{
 })
 const brittWheel = withCooldown(async (channel: string, user: string)=>{
   setTimeout(()=>{
-    chatClient.say(channel, "@Brittt DinkDonk https://pickerwheel.com/pw?id=kPJrg")
+    chatClient.say(channel, "@Brittt DinkDonk https://pickerwheel.com/pw?id=LSwdV")
   }, 2000)
 })
 const tetrioStats = withCooldown(async (channel: string, _, args: string[])=>{
