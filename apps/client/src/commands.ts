@@ -137,6 +137,11 @@ const brittWheel = withCooldown(async (channel: string, user: string)=>{
     chatClient.say(channel, "@Brittt DinkDonk https://pickerwheel.com/pw?id=vJSSM")
   }, 2000)
 })
+const ogress = withCooldown(async (channel: string, _, args: string[])=>{
+  setTimeout(()=>{
+    chatClient.say(channel, "Ogress dude I have not felt like going live, is anyone else like this? Like the past like tw-two months man I dont wanna go live ever. Like I'm so over going live. I think corona - They can't take me serious if you look at me like that.")
+  }, 2000)
+})
 const tetrioStats = withCooldown(async (channel: string, _, args: string[])=>{
   const tetrioUser = args[0]
   const response = await fetch(`https://ch.tetr.io/api/users/${tetrioUser}`).then(response=> response.json())
@@ -199,6 +204,7 @@ const commandList: CommandList = {
   '!lokipic': {func: lokipic, exclusiveChannels: ['brittt']},
   '!fortune': {func: fortune},
   '!brittwheel': {func: brittWheel, exclusiveChannels: ['brittt']},
+  '!ogress': {func: ogress, exclusiveChannels: ['brittt']},
   '!tetriostats': {func: tetrioStats, exclusiveChannels: ['erobb221', 'brittt']}
 }
 export default commandList
