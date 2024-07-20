@@ -193,7 +193,6 @@ const commandList: CommandList = {
   '!heartbeat': {func: heartbeat},
   '!tellmeajoke': {func: joke},
   '!randomfact': {func: randomFact},
-  '!dn': {func: deezNuts},
   '!compliment': {func: compliment},
   '!riddle': {func: riddle},
   '!catfact': {func: catFact},
