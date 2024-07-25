@@ -20,6 +20,7 @@ If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatb
 - `!tellmeajoke`: Tells a random joke by making a `GET` request to [official-joke-api.appspot.com/random_joke](https://official-joke-api.appspot.com/random_joke)
 - `!randomfact`: Tells a random fact by making a `GET` request to [uselessfacts.jsph.pl](https://uselessfacts.jsph.pl/)
 - `!compliment [user]`: Compliments [user] by making a query to the [cheer-me-up npm package](https://github.com/gargeesuresh/cheer-me-up)
+- `!insult [user]`: Insults [user] by making fetching a random insult from an internal list
 - `!riddle`: Tells a random riddle by making a `GET` request to [https://riddles-api.vercel.app/random](https://riddles-api.vercel.app/random)
 - `!catfact`: Tells a random cat fact by making a `GET` request to [catfact.ninja](https://catfact.ninja/)
 - `!catimage`: Links a random picture of a cat to the chat by making a `GET` request to [api.thecatapi.com](https://api.thecatapi.com/)

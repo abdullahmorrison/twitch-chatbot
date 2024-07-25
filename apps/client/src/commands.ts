@@ -3,6 +3,7 @@ import deezNutsJokes from './data/deeznuts.json'
 import lokipics from './data/lokipics.json'
 import whyisbritttnotlive from './data/whyisbritttnotlive.json'
 import compliments from 'cheer-me-up'
+import insults from './data/insults.json'
 
 const isOnCooldown: Set<string> = new Set()
 function withCooldown(command: (channel: string, ...args: any[]) => Promise<void>, cooldownTimeSeconds: number = 2) {
@@ -113,6 +114,14 @@ const compliment = withCooldown(async (channel: string, _, args: string[])=>{
     chatClient.say(channel, to ? `@${to} ${compliments.getCompliment()}` : `${compliments.getCompliment()}`)
   }, 2000)
 })
+const insult = withCooldown(async (channel: string, user: string, args: string[])=>{
+  const to = args[0] ? args[0].replace('@', '') : undefined
+  const random = Math.floor(Math.random() * insults.length)
+  
+  setTimeout(()=>{
+    chatClient.say(channel, to ? `@${to} ${insults[random]}` : `@${user} ${insults[random]}`)
+  }, 2000)
+})
 const lokipic = withCooldown(async (channel: string)=>{
   const random = Math.floor(Math.random() * lokipics.length)
   setTimeout(()=>{
@@ -185,7 +194,8 @@ export const commandAliasList = new Map<string, string>(
     ['!tiktokrecipe', '!recipe'],
     ['!whyisbrittnotlive', '!whyisbritttnotlive'],
     ['!britttwheel', '!brittwheel'],
-    ['!wheel', '!brittwheel']
+    ['!wheel', '!brittwheel'],
+    ['!commands', '!abdullahcommands']
   ]
 )
 const commandList: CommandList = {
@@ -194,6 +204,7 @@ const commandList: CommandList = {
   '!tellmeajoke': {func: joke},
   '!randomfact': {func: randomFact},
   '!compliment': {func: compliment},
+  '!insult': {func: insult},
   '!riddle': {func: riddle},
   '!catfact': {func: catFact},
   '!catimage': {func: catImage},
