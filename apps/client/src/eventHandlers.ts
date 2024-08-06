@@ -53,15 +53,15 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
       console.log(e)
     }
   }else if(user=='erobb221'){
-    const match = msg.toLowerCase().match(/^(?:i['']?m|i am)\s*(\d+)$/);
+    const match = msg.toLowerCase().match(/\b(?:i['']?m|i am)\s*(\d+)\b/)
     if(match && parseInt(match[1]) <= 12) return
 
-    chatClient.say(channel, "Lemon "+msg);
+    chatClient.say(channel, "Lemon "+msg)
   }else if(channel=='erobb221' && user=='brittt'){
-    const match = msg.toLowerCase().match(/^(?:i['']?m|i am)\s*(\d+)$/);
+    const match = msg.toLowerCase().match(/\b(?:i['']?m|i am)\s*(\d+)\b/)
     if(match && parseInt(match[1]) <= 12) return
 
-    chatClient.say(channel, "NAGGING "+msg);
+    chatClient.say(channel, "NAGGING "+msg)
   }
 }
 
