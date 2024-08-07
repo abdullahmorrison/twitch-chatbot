@@ -1,6 +1,7 @@
 import { chatClient } from './chatbot'
 import deezNutsJokes from './data/deeznuts.json'
 import lokipics from './data/lokipics.json'
+import katopics from './data/katopics.json' 
 import whyisbritttnotlive from './data/whyisbritttnotlive.json'
 import compliments from 'cheer-me-up'
 import insults from './data/insults.json'
@@ -128,6 +129,12 @@ const lokipic = withCooldown(async (channel: string)=>{
     chatClient.say(channel, "Logre "+lokipics[random])
   }, 2000)
 })
+const katopic = withCooldown(async (channel: string)=>{
+  const random = Math.floor(Math.random() * katopics.length)
+  setTimeout(()=>{
+    chatClient.say(channel, "ImKato "+katopics[random])
+  }, 2000)
+})
 const fortune = withCooldown(async (channel: string, user: string)=>{
   const result = await fetch('https://fortune-cookie4.p.rapidapi.com/slack', {
     method: 'GET',
@@ -212,6 +219,7 @@ const commandList: CommandList = {
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},
   '!whyisbritttnotlive': {func: whyIsBritttNotLive, exclusiveChannels: ['brittt']},
   '!lokipic': {func: lokipic, exclusiveChannels: ['brittt']},
+  '!katopic': {func: katopic, exclusiveChannels: ['brittt']},
   '!fortune': {func: fortune},
   '!brittwheel': {func: brittWheel, exclusiveChannels: ['brittt']},
   '!ogress': {func: ogress, exclusiveChannels: ['brittt']},
