@@ -42,6 +42,13 @@ const catFact = withCooldown(async (channel: string)=>{
     chatClient.say(channel, emote+" "+result.fact)
   }, 2000)
 })
+const dogFact = withCooldown(async (channel: string)=>{
+  const result = await fetch('https://dog-api.kinduff.com/api/facts?number=1').then(response => response.json())
+  const emote = channel === 'brittt' ? 'hesKato' : 'OhMyDog'
+  setTimeout(()=>{
+    chatClient.say(channel, emote+" "+result.facts[0])
+  }, 2000)
+})
 const joke = withCooldown(async (channel: string)=>{
   const result = await fetch('https://official-joke-api.appspot.com/random_joke').then(response => response.json())
   setTimeout(()=>{
@@ -214,6 +221,7 @@ const commandList: CommandList = {
   '!insult': {func: insult},
   '!riddle': {func: riddle},
   '!catfact': {func: catFact},
+  '!dogfact': {func: dogFact},
   '!catimage': {func: catImage},
   '!dogimage': {func: dogImage},
   '!recipe': {func: recipe, exclusiveChannels: ['brittt']},

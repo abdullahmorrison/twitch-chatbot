@@ -23,6 +23,7 @@ If you type a [chatbot command](https://github.com/abdullahmorrison/twitch-chatb
 - `!insult [user]`: Insults [user] by making fetching a random insult from an internal list
 - `!riddle`: Tells a random riddle by making a `GET` request to [https://riddles-api.vercel.app/random](https://riddles-api.vercel.app/random)
 - `!catfact`: Tells a random cat fact by making a `GET` request to [catfact.ninja](https://catfact.ninja/)
+- `!dogfact`: Tells a random cat fact by making a `GET` request to [dog-api.kinduff.com](https://dog-api.kinduff.com)
 - `!catimage`: Links a random picture of a cat to the chat by making a `GET` request to [api.thecatapi.com](https://api.thecatapi.com/)
 - `!dogimage`: Links a random picture of a dog to the chat by making a `GET` request to [random.dog/woof.json](https://random.dog/woof.json)
 - `!wouldyourather` : Tells a 'would you rather' question by making a `GET` request to [https://would-you-rather-api.abaanshanid.repl.co/](https://would-you-rather-api.abaanshanid.repl.co/)
