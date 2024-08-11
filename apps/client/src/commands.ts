@@ -119,7 +119,7 @@ const compliment = withCooldown(async (channel: string, _, args: string[])=>{
   const to = args[0] ? args[0].replace('@', '') : undefined
   
   setTimeout(()=>{
-    chatClient.say(channel, to ? `@${to} ${compliments.getCompliment()}` : `${compliments.getCompliment()}`)
+    chatClient.say(channel, to ? `4Love @${to} ${compliments.getCompliment()}` : `4Love ${compliments.getCompliment()}`)
   }, 2000)
 })
 const insult = withCooldown(async (channel: string, _, args: string[])=>{
