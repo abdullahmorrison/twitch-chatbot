@@ -54,12 +54,18 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
     }
   }else if(user=='erobb221'){
     const checkBannablePhrase = msg.toLowerCase().match(/\b(?:i[''’]?m|i am)\s*(\d+)\b/i)
-    if(checkBannablePhrase && parseInt(checkBannablePhrase[1]) <= 12) return
+    if(checkBannablePhrase && parseInt(checkBannablePhrase[1]) <= 12){
+      chatClient.say(channel, "@erobb221 nice try kek")
+      return
+    }
 
     chatClient.say(channel, "Lemon "+msg)
   }else if(channel=='erobb221' && user=='brittt'){
     const checkBannablePhrase = msg.toLowerCase().match(/\b(?:i[''’]?m|i am)\s*(\d+)\b/i)
-    if(checkBannablePhrase && parseInt(checkBannablePhrase[1]) <= 12) return
+    if(checkBannablePhrase && parseInt(checkBannablePhrase[1]) <= 12){
+      chatClient.say(channel, "@Brittt nice try kek")
+      return
+    }
 
     chatClient.say(channel, "NAGGING "+msg)
   }
