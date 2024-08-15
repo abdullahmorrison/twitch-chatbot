@@ -165,27 +165,6 @@ const ogress = withCooldown(async (channel: string, _, args: string[])=>{
     chatClient.say(channel, "Ogress dude I have not felt like going live, is anyone else like this? Like the past like tw-two months man I dont wanna go live ever. Like I'm so over going live. I think corona - They can't take me serious if you look at me like that.")
   }, 2000)
 })
-const tetrioStats = withCooldown(async (channel: string, _, args: string[])=>{
-  const tetrioUser = args[0]
-  const response = await fetch(`https://ch.tetr.io/api/users/${tetrioUser}`).then(response=> response.json())
-    .catch((e)=> chatClient.say(channel, "user not found"))
-
-  const userStats = response.data.user
-
-  setTimeout(()=>{
-    if(userStats.role == "user"){
-      const rank = userStats.league.rank?.toUpperCase() || "Unknown"
-      const bestRank = userStats.league.bestrank?.toUpperCase() || "Unknown"
-      const gamesplayed = userStats.gamesplayed
-      const gameswon = userStats.gameswon
-      const winPercentage = Math.round((gameswon/gamesplayed)*100) || 0
-
-      chatClient.say(channel, `Autistic (${tetrioUser}) Current Rank: ${rank}, Best Rank: ${bestRank}, Win/Loss: ${gameswon}/${gamesplayed} (${winPercentage}%)`)
-    }else if(userStats.role == "banned"){
-      chatClient.say(channel, `LOSERDANCEBUTFAST (${tetrioUser}) account banned`)
-    }else chatClient.say(channel, `User Role Unknown: ${userStats.role}`)
-  }, 2000)
-})
 
 interface Command {
   func: (channel: string, user: string, args: string[]) => Promise<void>,
@@ -232,6 +211,5 @@ const commandList: CommandList = {
   '!fortune': {func: fortune},
   '!brittwheel': {func: brittWheel, exclusiveChannels: ['brittt']},
   '!ogress': {func: ogress, exclusiveChannels: ['brittt']},
-  '!tetriostats': {func: tetrioStats, exclusiveChannels: ['erobb221', 'brittt']}
 }
 export default commandList
