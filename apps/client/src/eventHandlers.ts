@@ -27,6 +27,11 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
     let commandName = msg.split(' ')[0]
     const args = msg.split(' ').slice(1)
 
+    if(commandName=="!heartbeat" && user=="abdullahmorrison"){
+      chatClient.say(channel, "MrDestructoid @AbdullahMorrison I'm Alive")
+      return
+    }
+
     if(commandAliasList.has(commandName)) commandName = commandAliasList.get(commandName) || "" //if command is an alias, get the actual command name
        
     // check if command exists in commandList AND that command is not exclusive to another channel OR that the command is exclusive the channel the command was sent in
