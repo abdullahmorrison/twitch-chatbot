@@ -118,8 +118,10 @@ const compliment = withCooldown(async (channel: string, _, args: string[])=>{
     chatClient.say(channel, to ? `4Love @${to} ${compliments.getCompliment()}` : `4Love ${compliments.getCompliment()}`)
   }, 2000)
 })
-const insult = withCooldown(async (channel: string, _, args: string[])=>{
+const insult = withCooldown(async (channel: string, user: string, args: string[])=>{
   const to = args[0] ? args[0].replace('@', '') : undefined
+  if(to=="abdullahmorrison") return
+
   const random = Math.floor(Math.random() * insults.length)
 
   setTimeout(()=>{
