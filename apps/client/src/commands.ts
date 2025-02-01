@@ -164,6 +164,13 @@ const ogress = withCooldown(async (channel: string, _, args: string[])=>{
   }, 2000)
 })
 
+const discord = async (channel: string)=>{
+  chatClient.say(channel, "Chat with me in the discord 👉 https://discord.com/invite/FSyUrMQP")
+}
+const referral = async (channel: string)=>{
+  chatClient.say(channel, "help me get a job by referring me to your software development job (📨: abdullahmorrison@gmail.com)")
+}
+
 interface Command {
   func: (channel: string, user: string, args: string[]) => Promise<void>,
   exclusiveChannels?: string[],
@@ -208,5 +215,8 @@ const commandList: CommandList = {
   '!fortune': {func: fortune},
   '!brittwheel': {func: brittWheel, exclusiveChannels: ['brittt']},
   '!ogress': {func: ogress, exclusiveChannels: ['brittt']},
+
+  '!discord': {func: discord, exclusiveChannels: ['abdullahmorrison']},
+  '!refer': {func: referral, exclusiveChannels: ['abdullahmorrison']}
 }
 export default commandList
