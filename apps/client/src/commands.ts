@@ -170,6 +170,10 @@ const discord = async (channel: string)=>{
 const referral = async (channel: string)=>{
   chatClient.say(channel, "help me get a job by referring me to your software development job (📨: abdullahmorrison@gmail.com)")
 }
+const leetcodeStats  = async (channel: string)=>{
+  let result = await fetch('https://alfa-leetcode-api.onrender.com/abdullahmorrison/solved').then(response => response.json())
+  chatClient.say(channel, `Abdullah solved 🟢${result.easySolved} easys, 🟡${result.mediumSolved} mediums, and 🔴${result.hardSolved} hards`)
+}
 
 interface Command {
   func: (channel: string, user: string, args: string[]) => Promise<void>,
@@ -217,6 +221,7 @@ const commandList: CommandList = {
   '!ogress': {func: ogress, exclusiveChannels: ['brittt']},
 
   '!discord': {func: discord, exclusiveChannels: ['abdullahmorrison']},
-  '!refer': {func: referral, exclusiveChannels: ['abdullahmorrison']}
+  '!refer': {func: referral, exclusiveChannels: ['abdullahmorrison']},
+  '!leetcodestats': {func: leetcodeStats, exclusiveChannels: ['abdullahmorrison']}
 }
 export default commandList
