@@ -172,7 +172,7 @@ const referral = async (channel: string)=>{
 }
 const leetcodeStats  = async (channel: string)=>{
   const result = await fetch('https://alfa-leetcode-api.onrender.com/abdullahmorrison/solved').then(response => response.json())
-  const total = result.easySolved + result.mediumSolved + result.hardSolved
+  const total = Number(result.easySolved) + Number(result.mediumSolved) + Number(result.hardSolved)
   chatClient.say(channel, `Abdullah solved ${total} Leetcode questions. 🟢${result.easySolved} easys, 🟡${result.mediumSolved} mediums, and 🔴${result.hardSolved} hards`)
 }
 
