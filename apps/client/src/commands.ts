@@ -171,8 +171,9 @@ const referral = async (channel: string)=>{
   chatClient.say(channel, "help me get a job by referring me to your software development job (📨: abdullahmorrison@gmail.com)")
 }
 const leetcodeStats  = async (channel: string)=>{
-  let result = await fetch('https://alfa-leetcode-api.onrender.com/abdullahmorrison/solved').then(response => response.json())
-  chatClient.say(channel, `Abdullah solved 🟢${result.easySolved} easys, 🟡${result.mediumSolved} mediums, and 🔴${result.hardSolved} hards`)
+  const result = await fetch('https://alfa-leetcode-api.onrender.com/abdullahmorrison/solved').then(response => response.json())
+  const total = result.easySolved + result.mediumSolved + result.hardSolved
+  chatClient.say(channel, `Abdullah solved ${total} Leetcode questions. 🟢${result.easySolved} easys, 🟡${result.mediumSolved} mediums, and 🔴${result.hardSolved} hards`)
 }
 
 interface Command {
