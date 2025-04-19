@@ -199,6 +199,7 @@ export const commandAliasList = new Map<string, string>(
     ['!whyisbrittnotlive', '!whyisbritttnotlive'],
     ['!britttwheel', '!brittwheel'],
     ['!wheel', '!brittwheel'],
+    ['!deez', '!dn'],
     ['!commands', '!abdullahcommands']
   ]
 )
