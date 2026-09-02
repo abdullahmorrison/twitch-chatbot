@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 
 const accessTokenSchema = new Schema({
-    accessToken: {
+    token: {
         type: String,
         required: true
     }
