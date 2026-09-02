@@ -8,7 +8,7 @@ export function onDisconnectedHandler(reason: Error | undefined) {
 }
 
 const MIN_PYRAMID_HEIGHT = 3
-const EXEMPT_USER = 'abdullahmorrison'
+const OWNER = 'abdullahmorrison'
 const PYRAMID_TIMEOUT_MS = 60_000
 
 // one in-progress pyramid attempt per channel - anyone else talking breaks it
@@ -57,15 +57,29 @@ function isPyramidPrefix(counts: number[]): boolean {
   return true
 }
 
+const startedAt = Date.now()
+function uptime(): string {
+  const mins = Math.floor((Date.now() - startedAt) / 60_000)
+  if(mins < 60) return `${mins}m`
+  const hours = Math.floor(mins / 60)
+  if(hours < 24) return `${hours}h${mins % 60}m`
+  return `${Math.floor(hours / 24)}d${hours % 24}h`
+}
+
 let paused = false
 export async function onMessageHandler(channel: string, user: string, msg: string) {
-  if(user === 'abdullahmorrison' && msg === '!pause'){
-    chatClient.say(channel, 'MrDestructoid bot has been paused')
+  // answers even while paused - the point is to prove the bot is reachable
+  if(user === OWNER && msg === '!heartbeat'){
+    chatClient.say(channel, `@${user} weLive alive, up ${uptime()}, ${paused ? 'PAUSED' : 'watching for pyramids'}`)
+    return
+  }
+  if(user === OWNER && msg === '!pause'){
+    chatClient.say(channel, 'bot has been paused Bedge')
     paused = true
     return
   }
-  if(user === 'abdullahmorrison' && msg === '!unpause'){
-    chatClient.say(channel, 'MrDestructoid bot has been unpaused')
+  if(user === OWNER && msg === '!unpause'){
+    chatClient.say(channel, 'bot has been unpaused weLive')
     paused = false
     return
   }
@@ -100,7 +114,7 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
 
   // one message away from finishing: peak is tall enough and they're back down to 2
   if(descending && repeat.count === 2 && peak >= MIN_PYRAMID_HEIGHT){
-    if(user !== EXEMPT_USER) chatClient.say(channel, `@${user} ${nextBlockMessage()}`)
+    if(user !== OWNER) chatClient.say(channel, `@${user} ${nextBlockMessage()}`)
     attempts.delete(channel)
     return
   }
