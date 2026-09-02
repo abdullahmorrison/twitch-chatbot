@@ -87,30 +87,38 @@ function parseRepeat(msg: string): { token: string, count: number } | null {
 
 // Turns raw unit counts into row heights, or null if this can no longer be a
 // pyramid. Rows may be more than one unit wide (2,4,6,4,2 is a pyramid built two
-// emotes at a time), so everything is measured in whole base rows.
+// emotes at a time), so everything is measured in whole base rows. A row can also
+// be repeated any number of times - people pad the peak - so a repeat never ends
+// a run, it just doesn't advance it.
 function pyramidShape(counts: number[]): { rows: number[], inverted: boolean } | null {
   if(counts[0] < 1) return null
-  if(counts.length === 1) return { rows: [1], inverted: false }
 
-  const inverted = counts[1] < counts[0]
-  const unit = inverted ? counts[0] - counts[1] : counts[0]
+  // find the first row that differs, so leading repeats don't hide the direction
+  let turn = 1
+  while(turn < counts.length && counts[turn] === counts[0]) turn++
+  const inverted = turn < counts.length && counts[turn] < counts[0]
+
+  const unit = inverted ? counts[0] - counts[turn] : counts[0]
   if(unit < 1) return null
   if(counts.some(c => c % unit !== 0)) return null
   const rows = counts.map(c => c / unit)
 
   if(inverted){
-    // starts at the top and only ever comes down, one row at a time
+    // starts at the top and only ever comes down, a row at a time
     if(rows[0] < MIN_PYRAMID_HEIGHT) return null
-    if(!rows.every((r, i) => i === 0 || r === rows[i-1] - 1)) return null
+    for(let i = 1; i < rows.length; i++){
+      const step = rows[i] - rows[i-1]
+      if(step !== 0 && step !== -1) return null
+    }
     return { rows, inverted }
   }
 
   if(rows[0] !== 1) return null
-  let goingUp = true, plateauUsed = false
+  let goingUp = true
   for(let i = 1; i < rows.length; i++){
     const step = rows[i] - rows[i-1]
+    if(step === 0) continue
     if(goingUp && step === 1) continue
-    if(goingUp && step === 0 && !plateauUsed){ plateauUsed = true; continue } // doubled peak row
     if(step === -1){ goingUp = false; continue }
     return null
   }
