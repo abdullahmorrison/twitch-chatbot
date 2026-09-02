@@ -1,6 +1,4 @@
 import { chatClient } from './chatbot'
-import  commandList,  { commandAliasList } from './commands'
-import { trpcClient } from './trpcClient'
 
 export function onConnectedHandler(addr: string, port: number) {
   console.log('\x1b[32m%s\x1b[0m', `* Connected to ${addr}:${port}`)
@@ -9,73 +7,106 @@ export function onDisconnectedHandler(reason: Error | undefined) {
   console.log('\x1b[31m%s\x1b[0m', `* Disconnected from server: ${reason? reason : 'Unknown'}`)
 }
 
+const MIN_PYRAMID_HEIGHT = 3
+const EXEMPT_USER = 'abdullahmorrison'
+const PYRAMID_TIMEOUT_MS = 60_000
+
+// one in-progress pyramid attempt per channel - anyone else talking breaks it
+type Attempt = { user: string, token: string, counts: number[], updatedAt: number }
+const attempts = new Map<string, Attempt>()
+
+const blockMessages = [
+  'no pyramids in this chat Madge',
+  'pyramid denied Sadge',
+  'not today buddy OMEGALUL',
+  'this pyramid has been demolished LULW',
+  'blocked NOPERS',
+  'so close ThatsBait',
+  'pyramid scheme detected Susge',
+  'construction permit denied Clueless',
+  'the pharaoh says no NOIDONTTHINKSO',
+  'nice try KEK'
+]
+let blockMessageIndex = Math.floor(Math.random() * blockMessages.length)
+function nextBlockMessage(): string {
+  // walk the list so the same message never goes out twice in a row
+  blockMessageIndex = (blockMessageIndex + 1) % blockMessages.length
+  return blockMessages[blockMessageIndex]
+}
+
+// a message counts toward a pyramid only if it's the same token repeated
+function parseRepeat(msg: string): { token: string, count: number } | null {
+  const parts = msg.trim().split(/\s+/)
+  if(parts.length === 0 || parts[0] === '') return null
+  if(parts.some(p => p !== parts[0])) return null
+  return { token: parts[0], count: parts.length }
+}
+
+// counts must go 1,2,3...peak then peak-1,peak-2... with no gaps
+function isPyramidPrefix(counts: number[]): boolean {
+  if(counts[0] !== 1) return false
+  let peaked = false
+  for(let i = 1; i < counts.length; i++){
+    if(!peaked && counts[i] === counts[i-1] + 1) continue
+    if(counts[i] === counts[i-1] - 1){
+      peaked = true
+      continue
+    }
+    return false
+  }
+  return true
+}
+
 let paused = false
-//TODO: send the link to delete to the command
 export async function onMessageHandler(channel: string, user: string, msg: string) {
   if(user === 'abdullahmorrison' && msg === '!pause'){
     chatClient.say(channel, 'MrDestructoid bot has been paused')
     paused = true
+    return
   }
-  else if(user === 'abdullahmorrison' && msg === '!unpause'){
+  if(user === 'abdullahmorrison' && msg === '!unpause'){
     chatClient.say(channel, 'MrDestructoid bot has been unpaused')
     paused = false
+    return
   }
-
   if(paused) return
 
-  if(msg[0] === '!') {
-    let commandName = msg.split(' ')[0]
-    const args = msg.split(' ').slice(1)
+  if(user.toLowerCase() === chatClient.irc.currentNick?.toLowerCase()) return
 
-    if(commandName=="!heartbeat" && user=="abdullahmorrison"){
-      chatClient.say(channel, "MrDestructoid @AbdullahMorrison I'm Alive")
-      return
-    }
-
-    if(commandAliasList.has(commandName)) commandName = commandAliasList.get(commandName) || "" //if command is an alias, get the actual command name
-       
-    // check if command exists in commandList AND that command is not exclusive to another channel OR that the command is exclusive the channel the command was sent in
-    if(commandName in commandList && (!commandList[commandName].exclusiveChannels || commandList[commandName].exclusiveChannels?.includes(channel))) {
-      try {
-        await commandList[commandName].func(channel, user, args) 
-      } catch(e) {
-        console.log(e)
-      }
-    }
-  }else if(channel=='erobb221'
-          && msg.includes('streamable.com') 
-          || msg.includes('clips.twitch.tv') 
-          || msg.includes('youtube.com/clip/')) {//save links pasted in erobb's chat
-    if(user == 'abdullahmorrisonbot') return //this is me
-    if(user == 'oldmanburger' || user == 'transerobber') return //these guys link gross stuff
-
-    const link = msg.split(' ').filter(str => str.includes('https://'))
-    try{
-      if(link[0]) 
-        trpcClient.linkCreate.mutate(link[0])
-    }catch(e){
-      console.log(link[0])
-      console.log(e)
-    }
-  }else if(user=='erobb221'){
-    const checkBannablePhrase = msg.toLowerCase().match(/\b(?:i[''’]?m|i am)\s*(\d+)\b/i)
-    if(checkBannablePhrase && parseInt(checkBannablePhrase[1]) <= 12){
-      chatClient.say(channel, "@erobb221 nice try kek")
-      return
-    }
-
-    chatClient.say(channel, "Lemon "+msg)
-  }else if(channel=='erobb221' && user=='brittt'){
-    const checkBannablePhrase = msg.toLowerCase().match(/\b(?:i[''’]?m|i am)\s*(\d+)\b/i)
-    if(checkBannablePhrase && parseInt(checkBannablePhrase[1]) <= 12){
-      chatClient.say(channel, "@Brittt nice try kek")
-      return
-    }
-
-    chatClient.say(channel, "NAGGING "+msg)
+  const repeat = parseRepeat(msg)
+  if(!repeat){
+    attempts.delete(channel)
+    return
   }
-}
 
+  const now = Date.now()
+  const existing = attempts.get(channel)
+  const continues = existing
+    && existing.user === user
+    && existing.token === repeat.token
+    && now - existing.updatedAt < PYRAMID_TIMEOUT_MS
+  const counts = continues ? [...existing!.counts, repeat.count] : [repeat.count]
+
+  if(!isPyramidPrefix(counts)){
+    // this message can still be the start of a fresh pyramid
+    if(repeat.count === 1) attempts.set(channel, { user, token: repeat.token, counts: [1], updatedAt: now })
+    else attempts.delete(channel)
+    return
+  }
+
+  const prev = counts[counts.length - 2]
+  const descending = counts.length > 1 && repeat.count < prev
+  const peak = Math.max(...counts)
+
+  // one message away from finishing: peak is tall enough and they're back down to 2
+  if(descending && repeat.count === 2 && peak >= MIN_PYRAMID_HEIGHT){
+    if(user !== EXEMPT_USER) chatClient.say(channel, `@${user} ${nextBlockMessage()}`)
+    attempts.delete(channel)
+    return
+  }
+
+  attempts.set(channel, { user, token: repeat.token, counts, updatedAt: now })
+}
 
 export function onStreamerOnline(channel: string){ //TODO
 }
