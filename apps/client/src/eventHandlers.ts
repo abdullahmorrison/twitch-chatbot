@@ -16,8 +16,10 @@ const OWNER_CHANNEL = 'abdullahmorrison' // test channel - OWNER is fair game he
 // twurple may hand us '#channel' or 'channel' depending on version
 const channelName = (channel: string) => channel.replace(/^#/, '').toLowerCase()
 
-// one in-progress pyramid attempt per channel - anyone else talking breaks it
-type Attempt = { user: string, token: string, counts: number[], updatedAt: number }
+// One in-progress pyramid attempt per channel. Anyone matching the current row
+// can carry it on - pyramids get finished collaboratively - but a message that
+// isn't the next row kills it.
+type Attempt = { token: string, counts: number[], updatedAt: number }
 const attempts = new Map<string, Attempt>()
 
 const blockMessages = [
@@ -155,7 +157,6 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
   const now = Date.now()
   const existing = attempts.get(channel)
   const continues = existing
-    && existing.user === user
     && existing.token === repeat.token
     && now - existing.updatedAt < PYRAMID_TIMEOUT_MS
   const counts = continues ? [...existing!.counts, repeat.count] : [repeat.count]
@@ -163,7 +164,7 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
   const shape = pyramidShape(counts)
   if(!shape){
     // dead as a pyramid, but this row can still be the base of the next one
-    attempts.set(channel, { user, token: repeat.token, counts: [repeat.count], updatedAt: now })
+    attempts.set(channel, { token: repeat.token, counts: [repeat.count], updatedAt: now })
     return
   }
 
@@ -172,7 +173,8 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
   const descending = rows.length > 1 && current < rows[rows.length - 2]
   const peak = Math.max(...rows)
 
-  // one row away from finishing: tall enough, and they're back down to 2
+  // one row away from finishing: tall enough, and they're back down to 2.
+  // `user` is whoever posted this row, which may not be who started the pyramid.
   if(descending && current === 2 && peak >= MIN_PYRAMID_HEIGHT){
     // OWNER is exempt everywhere except his own channel, so he can still test there
     if(user !== OWNER || channelName(channel) === OWNER_CHANNEL)
@@ -181,7 +183,7 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
     return
   }
 
-  attempts.set(channel, { user, token: repeat.token, counts, updatedAt: now })
+  attempts.set(channel, { token: repeat.token, counts, updatedAt: now })
 }
 
 export function onStreamerOnline(channel: string){ //TODO
