@@ -47,6 +47,17 @@ const invertedMessages = [
   'flipped and still blocked NOIDONTTHINKSO'
 ]
 
+const creatorMessages = [
+  'I dont block my creator tenzinArrive',
+  'creator privileges Prayge',
+  'letting that one through boss tenzinClap',
+  'I dont block the guy who wrote me KEK',
+  'rules dont apply to the one who made me Okayge',
+  'pyramid approved, you built me ImHIM',
+  'nice pyramid boss GENIUS',
+  'no blocking my own creator OMEGALUL'
+]
+
 // walk each list so the same message never goes out twice in a row - twitch drops
 // a duplicate sent too soon after the last one
 function cycler(messages: string[]): () => string {
@@ -58,6 +69,7 @@ function cycler(messages: string[]): () => string {
 }
 const nextBlockMessage = cycler(blockMessages)
 const nextInvertedMessage = cycler(invertedMessages)
+const nextCreatorMessage = cycler(creatorMessages)
 
 // Chatters pad messages to dodge twitch's duplicate filter. Two families matter:
 // format characters (U+034F is the common one) and characters that simply render
@@ -181,12 +193,22 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
   const descending = rows.length > 1 && current < rows[rows.length - 2]
   const peak = Math.max(...rows)
 
+  // OWNER is exempt everywhere except his own channel, so he can still test there
+  const exempt = user === OWNER && channelName(channel) !== OWNER_CHANNEL
+  const tall = peak >= MIN_PYRAMID_HEIGHT
+
   // one row away from finishing: tall enough, and they're back down to 2.
   // `user` is whoever posted this row, which may not be who started the pyramid.
-  if(descending && current === 2 && peak >= MIN_PYRAMID_HEIGHT){
-    // OWNER is exempt everywhere except his own channel, so he can still test there
-    if(user !== OWNER || channelName(channel) === OWNER_CHANNEL)
-      chatClient.say(channel, `@${user} ${inverted ? nextInvertedMessage() : nextBlockMessage()}`)
+  if(descending && current === 2 && tall && !exempt){
+    chatClient.say(channel, `@${user} ${inverted ? nextInvertedMessage() : nextBlockMessage()}`)
+    attempts.delete(channel)
+    return
+  }
+
+  // OWNER got one all the way down unblocked - let it land, then say so. Speaking
+  // any earlier would break the pyramid, which is the point of the exemption.
+  if(descending && current === 1 && tall && exempt){
+    chatClient.say(channel, `@${user} ${nextCreatorMessage()}`)
     attempts.delete(channel)
     return
   }
