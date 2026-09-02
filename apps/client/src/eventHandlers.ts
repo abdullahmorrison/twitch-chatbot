@@ -1,3 +1,4 @@
+import { ChatMessage } from '@twurple/chat'
 import { chatClient } from './chatbot'
 
 export function onConnectedHandler(addr: string, port: number) {
@@ -61,6 +62,12 @@ const nextInvertedMessage = cycler(invertedMessages)
 // blank - braille blank and the hangul fillers, which chatterino/7tv users paste.
 const INVISIBLE = /[­͏؜ᅟᅠ឴឵᠎​-‏‪-‮⁠-⁤⁦-⁯⠀ㅤ﻿ﾠ]|\uDB40[\uDC00-\uDC7F]/g
 
+// Twitch puts "@parent " at the front of a reply's body, which turns every row of
+// a pyramid into a different unit. Drop it when the tags say this is a reply.
+function stripReplyPrefix(text: string, chatMsg?: ChatMessage): string {
+  return chatMsg?.isReply ? text.replace(/^@\S+\s+/, '') : text
+}
+
 // A pyramid row is some unit repeated. The unit is usually one emote but can be
 // several ("TriHard weLive TriHard weLive" is 2 of "TriHard weLive"), so take the
 // shortest slice the whole row is built from.
@@ -118,7 +125,8 @@ function uptime(): string {
 }
 
 let paused = false
-export async function onMessageHandler(channel: string, user: string, msg: string) {
+export async function onMessageHandler(channel: string, user: string, raw: string, chatMsg?: ChatMessage) {
+  const msg = stripReplyPrefix(raw, chatMsg)
   // answers even while paused - the point is to prove the bot is reachable
   if(user === OWNER && msg === '!heartbeat'){
     chatClient.say(channel, `@${user} weLive alive, up ${uptime()}, ${paused ? 'PAUSED' : 'watching for pyramids'}`)

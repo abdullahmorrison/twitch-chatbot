@@ -34,7 +34,7 @@ async function main(){
 
   chatClient = new ChatClient({authProvider, channels: channels});
 
-  chatClient.onMessage((channel, user, message)=>onMessageHandler(channel, user, message))
+  chatClient.onMessage((channel, user, message, msg)=>onMessageHandler(channel, user, message, msg))
   chatClient.onConnect(() => onConnectedHandler(chatClient.irc.currentNick, chatClient.irc.port))
   chatClient.onDisconnect((_, reason) => onDisconnectedHandler(reason))
   await chatClient.connect()
