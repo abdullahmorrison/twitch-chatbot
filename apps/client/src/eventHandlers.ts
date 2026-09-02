@@ -38,12 +38,23 @@ function nextBlockMessage(): string {
   return blockMessages[blockMessageIndex]
 }
 
-// a message counts toward a pyramid only if it's the same token repeated
+// chatters prepend invisible characters to dodge twitch's duplicate-message
+// filter - U+034F is the common one. Strip them or the unit never matches.
+const INVISIBLE = /[\u00AD\u034F\u061C\u180E\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u206F\uFEFF]|\uDB40[\uDC00-\uDC7F]/g
+
+// A pyramid row is some unit repeated. The unit is usually one emote but can be
+// several ("TriHard weLive TriHard weLive" is 2 of "TriHard weLive"), so take the
+// shortest slice the whole row is built from.
 function parseRepeat(msg: string): { token: string, count: number } | null {
-  const parts = msg.trim().split(/\s+/)
-  if(parts.length === 0 || parts[0] === '') return null
-  if(parts.some(p => p !== parts[0])) return null
-  return { token: parts[0], count: parts.length }
+  const parts = msg.replace(INVISIBLE, ' ').trim().split(/\s+/).filter(Boolean)
+  if(parts.length === 0) return null
+
+  for(let size = 1; size <= parts.length; size++){
+    if(parts.length % size !== 0) continue
+    if(parts.every((p, i) => p === parts[i % size]))
+      return { token: parts.slice(0, size).join(' '), count: parts.length / size }
+  }
+  return null
 }
 
 // counts must go 1,2,3...peak then peak-1,peak-2... with no gaps
