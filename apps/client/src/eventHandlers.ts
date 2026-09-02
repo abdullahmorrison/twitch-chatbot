@@ -8,12 +8,12 @@ export function onDisconnectedHandler(reason: Error | undefined) {
 }
 
 const MIN_PYRAMID_HEIGHT = 3
+const PYRAMID_TIMEOUT_MS = 300_000
 const OWNER = 'abdullahmorrison'
 const OWNER_CHANNEL = 'abdullahmorrison' // test channel - OWNER is fair game here
 
 // twurple may hand us '#channel' or 'channel' depending on version
 const channelName = (channel: string) => channel.replace(/^#/, '').toLowerCase()
-const PYRAMID_TIMEOUT_MS = 60_000
 
 // one in-progress pyramid attempt per channel - anyone else talking breaks it
 type Attempt = { user: string, token: string, counts: number[], updatedAt: number }
@@ -31,22 +31,41 @@ const blockMessages = [
   'the pharaoh says no NOIDONTTHINKSO',
   'nice try KEK'
 ]
-let blockMessageIndex = Math.floor(Math.random() * blockMessages.length)
-function nextBlockMessage(): string {
-  // walk the list so the same message never goes out twice in a row
-  blockMessageIndex = (blockMessageIndex + 1) % blockMessages.length
-  return blockMessages[blockMessageIndex]
-}
+const invertedMessages = [
+  'upside down still counts Clueless',
+  'flipping it does not help NOPERS',
+  'inverted pyramid denied Madge',
+  'thats a pyramid standing on its head OMEGALUL',
+  'reverse pyramid, same answer KEK',
+  'no pyramids, either way up Sadge',
+  'blocked, upside down LULW',
+  'gravity denied ThatsBait',
+  'nice try, inverted is still a pyramid Susge',
+  'flipped and still blocked NOIDONTTHINKSO'
+]
 
-// chatters prepend invisible characters to dodge twitch's duplicate-message
-// filter - U+034F is the common one. Strip them or the unit never matches.
-const INVISIBLE = /[\u00AD\u034F\u061C\u180E\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u206F\uFEFF]|\uDB40[\uDC00-\uDC7F]/g
+// walk each list so the same message never goes out twice in a row - twitch drops
+// a duplicate sent too soon after the last one
+function cycler(messages: string[]): () => string {
+  let i = Math.floor(Math.random() * messages.length)
+  return () => {
+    i = (i + 1) % messages.length
+    return messages[i]
+  }
+}
+const nextBlockMessage = cycler(blockMessages)
+const nextInvertedMessage = cycler(invertedMessages)
+
+// Chatters pad messages to dodge twitch's duplicate filter. Two families matter:
+// format characters (U+034F is the common one) and characters that simply render
+// blank - braille blank and the hangul fillers, which chatterino/7tv users paste.
+const INVISIBLE = /[­͏؜ᅟᅠ឴឵᠎​-‏‪-‮⁠-⁤⁦-⁯⠀ㅤ﻿ﾠ]|\uDB40[\uDC00-\uDC7F]/g
 
 // A pyramid row is some unit repeated. The unit is usually one emote but can be
 // several ("TriHard weLive TriHard weLive" is 2 of "TriHard weLive"), so take the
 // shortest slice the whole row is built from.
 function parseRepeat(msg: string): { token: string, count: number } | null {
-  const parts = msg.replace(INVISIBLE, ' ').trim().split(/\s+/).filter(Boolean)
+  const parts = msg.normalize('NFKC').replace(INVISIBLE, ' ').trim().split(/\s+/).filter(Boolean)
   if(parts.length === 0) return null
 
   for(let size = 1; size <= parts.length; size++){
@@ -57,19 +76,36 @@ function parseRepeat(msg: string): { token: string, count: number } | null {
   return null
 }
 
-// counts must go 1,2,3...peak then peak-1,peak-2... with no gaps
-function isPyramidPrefix(counts: number[]): boolean {
-  if(counts[0] !== 1) return false
-  let peaked = false
-  for(let i = 1; i < counts.length; i++){
-    if(!peaked && counts[i] === counts[i-1] + 1) continue
-    if(counts[i] === counts[i-1] - 1){
-      peaked = true
-      continue
-    }
-    return false
+// Turns raw unit counts into row heights, or null if this can no longer be a
+// pyramid. Rows may be more than one unit wide (2,4,6,4,2 is a pyramid built two
+// emotes at a time), so everything is measured in whole base rows.
+function pyramidShape(counts: number[]): { rows: number[], inverted: boolean } | null {
+  if(counts[0] < 1) return null
+  if(counts.length === 1) return { rows: [1], inverted: false }
+
+  const inverted = counts[1] < counts[0]
+  const unit = inverted ? counts[0] - counts[1] : counts[0]
+  if(unit < 1) return null
+  if(counts.some(c => c % unit !== 0)) return null
+  const rows = counts.map(c => c / unit)
+
+  if(inverted){
+    // starts at the top and only ever comes down, one row at a time
+    if(rows[0] < MIN_PYRAMID_HEIGHT) return null
+    if(!rows.every((r, i) => i === 0 || r === rows[i-1] - 1)) return null
+    return { rows, inverted }
   }
-  return true
+
+  if(rows[0] !== 1) return null
+  let goingUp = true, plateauUsed = false
+  for(let i = 1; i < rows.length; i++){
+    const step = rows[i] - rows[i-1]
+    if(goingUp && step === 1) continue
+    if(goingUp && step === 0 && !plateauUsed){ plateauUsed = true; continue } // doubled peak row
+    if(step === -1){ goingUp = false; continue }
+    return null
+  }
+  return { rows, inverted }
 }
 
 const startedAt = Date.now()
@@ -116,22 +152,23 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
     && now - existing.updatedAt < PYRAMID_TIMEOUT_MS
   const counts = continues ? [...existing!.counts, repeat.count] : [repeat.count]
 
-  if(!isPyramidPrefix(counts)){
-    // this message can still be the start of a fresh pyramid
-    if(repeat.count === 1) attempts.set(channel, { user, token: repeat.token, counts: [1], updatedAt: now })
-    else attempts.delete(channel)
+  const shape = pyramidShape(counts)
+  if(!shape){
+    // dead as a pyramid, but this row can still be the base of the next one
+    attempts.set(channel, { user, token: repeat.token, counts: [repeat.count], updatedAt: now })
     return
   }
 
-  const prev = counts[counts.length - 2]
-  const descending = counts.length > 1 && repeat.count < prev
-  const peak = Math.max(...counts)
+  const { rows, inverted } = shape
+  const current = rows[rows.length - 1]
+  const descending = rows.length > 1 && current < rows[rows.length - 2]
+  const peak = Math.max(...rows)
 
-  // one message away from finishing: peak is tall enough and they're back down to 2
-  if(descending && repeat.count === 2 && peak >= MIN_PYRAMID_HEIGHT){
+  // one row away from finishing: tall enough, and they're back down to 2
+  if(descending && current === 2 && peak >= MIN_PYRAMID_HEIGHT){
     // OWNER is exempt everywhere except his own channel, so he can still test there
     if(user !== OWNER || channelName(channel) === OWNER_CHANNEL)
-      chatClient.say(channel, `@${user} ${nextBlockMessage()}`)
+      chatClient.say(channel, `@${user} ${inverted ? nextInvertedMessage() : nextBlockMessage()}`)
     attempts.delete(channel)
     return
   }
