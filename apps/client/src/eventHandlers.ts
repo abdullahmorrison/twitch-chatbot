@@ -9,6 +9,10 @@ export function onDisconnectedHandler(reason: Error | undefined) {
 
 const MIN_PYRAMID_HEIGHT = 3
 const OWNER = 'abdullahmorrison'
+const OWNER_CHANNEL = 'abdullahmorrison' // test channel - OWNER is fair game here
+
+// twurple may hand us '#channel' or 'channel' depending on version
+const channelName = (channel: string) => channel.replace(/^#/, '').toLowerCase()
 const PYRAMID_TIMEOUT_MS = 60_000
 
 // one in-progress pyramid attempt per channel - anyone else talking breaks it
@@ -114,7 +118,9 @@ export async function onMessageHandler(channel: string, user: string, msg: strin
 
   // one message away from finishing: peak is tall enough and they're back down to 2
   if(descending && repeat.count === 2 && peak >= MIN_PYRAMID_HEIGHT){
-    if(user !== OWNER) chatClient.say(channel, `@${user} ${nextBlockMessage()}`)
+    // OWNER is exempt everywhere except his own channel, so he can still test there
+    if(user !== OWNER || channelName(channel) === OWNER_CHANNEL)
+      chatClient.say(channel, `@${user} ${nextBlockMessage()}`)
     attempts.delete(channel)
     return
   }
