@@ -71,11 +71,17 @@ const nextBlockMessage = cycler(blockMessages)
 const nextInvertedMessage = cycler(invertedMessages)
 const nextCreatorMessage = cycler(creatorMessages)
 
-// Chatters pad messages to dodge twitch's duplicate filter, and a lone padding
-// character sitting on its own counts as a whole extra emote to a naive split.
-// Covers format characters (U+034F), things that just render blank (braille
-// blank, hangul fillers), combining marks, and variation selectors (U+FE0F).
-const INVISIBLE = /[\u00AD\u0300-\u036F\u061C\u115F\u1160\u17B4\u17B5\u180E\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u206F\u2800\u3164\uFE00-\uFE0F\uFEFF\uFFA0]|\uDB40[\uDC00-\uDDEF]/g
+// Chatters pad messages to dodge twitch's duplicate filter, and padding that
+// paints nothing still counts as an emote to a naive split. Listing the
+// characters to strip is a losing game - there is always one more - so this asks
+// the opposite question and drops anything that cannot render: control, format,
+// surrogate, private-use and combining codepoints, plus anything UNASSIGNED, so
+// padding invented in a future unicode version is covered before it exists.
+const NON_RENDERING = /[\p{Cc}\p{Cf}\p{Cs}\p{Co}\p{Cn}\p{Mn}\p{Me}]/gu
+
+// The leftovers: codepoints in a visible category that still paint nothing.
+// Unicode has only a handful, and they do not grow the way format characters do.
+const BLANK = /[\u115F\u1160\u2800\u3164\uFFA0]/g
 
 // Twitch puts "@parent " at the front of a reply's body, which turns every row of
 // a pyramid into a different unit. Drop it when the tags say this is a reply.
@@ -83,8 +89,14 @@ function stripReplyPrefix(text: string, chatMsg?: ChatMessage): string {
   return chatMsg?.isReply ? text.replace(/^@\S+\s+/, '') : text
 }
 
+// Removing rather than space-separating matters: padding stuck to an emote with
+// no space ("Rime<U+FE0F>") must collapse back onto it, not split it in two.
 function tokenize(msg: string): string[] {
-  return msg.normalize('NFKC').replace(INVISIBLE, ' ').trim().split(/\s+/).filter(Boolean)
+  return msg.normalize('NFKC')
+    .replace(NON_RENDERING, '')
+    .replace(BLANK, '')
+    .split(/[\s\p{Z}]+/u)
+    .filter(Boolean)
 }
 
 // token-for-token prefix
