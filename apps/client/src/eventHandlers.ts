@@ -173,7 +173,7 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
   const msg = stripReplyPrefix(raw, chatMsg)
   // answers even while paused - the point is to prove the bot is reachable
   if(user === OWNER && msg === '!heartbeat'){
-    chatClient.say(channel, `@${user} weLive alive, up ${uptime()}, ${paused ? 'PAUSED' : 'watching for pyramids'}`)
+    chatClient.say(channel, `@${user} MrDestructoid alive, up ${uptime()}, ${paused ? 'PAUSED' : 'watching for pyramids'}`)
     return
   }
   if(user === OWNER && msg === '!pause'){
