@@ -71,10 +71,11 @@ const nextBlockMessage = cycler(blockMessages)
 const nextInvertedMessage = cycler(invertedMessages)
 const nextCreatorMessage = cycler(creatorMessages)
 
-// Chatters pad messages to dodge twitch's duplicate filter. Two families matter:
-// format characters (U+034F is the common one) and characters that simply render
-// blank - braille blank and the hangul fillers, which chatterino/7tv users paste.
-const INVISIBLE = /[­͏؜ᅟᅠ឴឵᠎​-‏‪-‮⁠-⁤⁦-⁯⠀ㅤ﻿ﾠ]|\uDB40[\uDC00-\uDC7F]/g
+// Chatters pad messages to dodge twitch's duplicate filter, and a lone padding
+// character sitting on its own counts as a whole extra emote to a naive split.
+// Covers format characters (U+034F), things that just render blank (braille
+// blank, hangul fillers), combining marks, and variation selectors (U+FE0F).
+const INVISIBLE = /[\u00AD\u0300-\u036F\u061C\u115F\u1160\u17B4\u17B5\u180E\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u206F\u2800\u3164\uFE00-\uFE0F\uFEFF\uFFA0]|\uDB40[\uDC00-\uDDEF]/g
 
 // Twitch puts "@parent " at the front of a reply's body, which turns every row of
 // a pyramid into a different unit. Drop it when the tags say this is a reply.
