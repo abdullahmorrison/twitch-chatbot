@@ -49,13 +49,13 @@ const invertedMessages = [
 
 const creatorMessages = [
   'I dont block my creator 4Salute',
-  'creator privileges 4Salute',
-  'letting that one through boss 4Salute',
-  'I dont block the guy who wrote me 4Salute',
-  'rules dont apply to the one who made me 4Salute',
-  'pyramid approved, you built me 4Salute',
-  'nice pyramid boss 4Salute',
-  'no blocking my own creator 4Salute'
+  'creator privileges Prayge',
+  'letting that one through boss tenzinClap',
+  'I dont block the guy who wrote me KEK',
+  'rules dont apply to the one who made me Okayge',
+  'pyramid approved, you built me ImHIM',
+  'nice pyramid boss GENIUS',
+  'no blocking my own creator OMEGALUL'
 ]
 
 // walk each list so the same message never goes out twice in a row - twitch drops
