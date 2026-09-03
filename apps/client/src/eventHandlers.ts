@@ -19,7 +19,7 @@ const channelName = (channel: string) => channel.replace(/^#/, '').toLowerCase()
 // One in-progress pyramid attempt per channel. Anyone matching the current row
 // can carry it on - pyramids get finished collaboratively - but a message that
 // isn't the next row kills it.
-type Attempt = { token: string, counts: number[], updatedAt: number }
+type Attempt = { rows: string[][], updatedAt: number }
 const attempts = new Map<string, Attempt>()
 
 const blockMessages = [
@@ -82,59 +82,68 @@ function stripReplyPrefix(text: string, chatMsg?: ChatMessage): string {
   return chatMsg?.isReply ? text.replace(/^@\S+\s+/, '') : text
 }
 
-// A pyramid row is some unit repeated. The unit is usually one emote but can be
-// several ("TriHard weLive TriHard weLive" is 2 of "TriHard weLive"), so take the
-// shortest slice the whole row is built from.
-function parseRepeat(msg: string): { token: string, count: number } | null {
-  const parts = msg.normalize('NFKC').replace(INVISIBLE, ' ').trim().split(/\s+/).filter(Boolean)
-  if(parts.length === 0) return null
-
-  for(let size = 1; size <= parts.length; size++){
-    if(parts.length % size !== 0) continue
-    if(parts.every((p, i) => p === parts[i % size]))
-      return { token: parts.slice(0, size).join(' '), count: parts.length / size }
-  }
-  return null
+function tokenize(msg: string): string[] {
+  return msg.normalize('NFKC').replace(INVISIBLE, ' ').trim().split(/\s+/).filter(Boolean)
 }
 
-// Turns raw unit counts into row heights, or null if this can no longer be a
-// pyramid. Rows may be more than one unit wide (2,4,6,4,2 is a pyramid built two
-// emotes at a time), so everything is measured in whole base rows. A row can also
-// be repeated any number of times - people pad the peak - so a repeat never ends
-// a run, it just doesn't advance it.
-function pyramidShape(counts: number[]): { rows: number[], inverted: boolean } | null {
-  if(counts[0] < 1) return null
+// token-for-token prefix
+function isPrefix(a: string[], b: string[]): boolean {
+  return a.length <= b.length && a.every((t, i) => t === b[i])
+}
 
-  // find the first row that differs, so leading repeats don't hide the direction
+// Turns the rows so far into row heights, or null if this can no longer be a
+// pyramid. The rows do not have to be one emote repeated - what makes a pyramid
+// is that each row is the one before it plus a fixed-width step, and on the way
+// down the shorter row is a prefix of the taller one. That covers a plain
+// "a / a a / a a a", rows built several emotes at a time, and mixed rows like
+// "wide / wide Pensive / wide Pensive wide". A repeated row never ends a run, it
+// just doesn't advance it.
+function pyramidShape(rows: string[][]): { heights: number[], inverted: boolean } | null {
+  const lens = rows.map(r => r.length)
+  if(lens[0] < 1) return null
+
+  let width = 0
+  for(let i = 1; i < rows.length; i++){
+    const prev = rows[i-1], cur = rows[i]
+    if(cur.length === prev.length){
+      if(!isPrefix(cur, prev)) return null // same length, so this means identical
+      continue
+    }
+    const grew = cur.length > prev.length
+    if(!isPrefix(grew ? prev : cur, grew ? cur : prev)) return null
+    const step = Math.abs(cur.length - prev.length)
+    if(width === 0) width = step
+    else if(step !== width) return null
+  }
+  if(width === 0) return { heights: lens.map(() => 1), inverted: false } // nothing but repeats yet
+  if(lens.some(l => l % width !== 0)) return null
+
+  const heights = lens.map(l => l / width)
+
+  // direction comes from the first row that actually differs
   let turn = 1
-  while(turn < counts.length && counts[turn] === counts[0]) turn++
-  const inverted = turn < counts.length && counts[turn] < counts[0]
-
-  const unit = inverted ? counts[0] - counts[turn] : counts[0]
-  if(unit < 1) return null
-  if(counts.some(c => c % unit !== 0)) return null
-  const rows = counts.map(c => c / unit)
+  while(turn < heights.length && heights[turn] === heights[0]) turn++
+  const inverted = turn < heights.length && heights[turn] < heights[0]
 
   if(inverted){
-    // starts at the top and only ever comes down, a row at a time
-    if(rows[0] < MIN_PYRAMID_HEIGHT) return null
-    for(let i = 1; i < rows.length; i++){
-      const step = rows[i] - rows[i-1]
+    if(heights[0] < MIN_PYRAMID_HEIGHT) return null
+    for(let i = 1; i < heights.length; i++){
+      const step = heights[i] - heights[i-1]
       if(step !== 0 && step !== -1) return null
     }
-    return { rows, inverted }
+    return { heights, inverted }
   }
 
-  if(rows[0] !== 1) return null
+  if(heights[0] !== 1) return null
   let goingUp = true
-  for(let i = 1; i < rows.length; i++){
-    const step = rows[i] - rows[i-1]
+  for(let i = 1; i < heights.length; i++){
+    const step = heights[i] - heights[i-1]
     if(step === 0) continue
     if(goingUp && step === 1) continue
     if(step === -1){ goingUp = false; continue }
     return null
   }
-  return { rows, inverted }
+  return { heights, inverted }
 }
 
 const startedAt = Date.now()
@@ -168,30 +177,28 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
 
   if(user.toLowerCase() === chatClient.irc.currentNick?.toLowerCase()) return
 
-  const repeat = parseRepeat(msg)
-  if(!repeat){
+  const tokens = tokenize(msg)
+  if(tokens.length === 0){
     attempts.delete(channel)
     return
   }
 
   const now = Date.now()
   const existing = attempts.get(channel)
-  const continues = existing
-    && existing.token === repeat.token
-    && now - existing.updatedAt < PYRAMID_TIMEOUT_MS
-  const counts = continues ? [...existing!.counts, repeat.count] : [repeat.count]
+  const continues = existing && now - existing.updatedAt < PYRAMID_TIMEOUT_MS
+  const rows = continues ? [...existing!.rows, tokens] : [tokens]
 
-  const shape = pyramidShape(counts)
+  const shape = pyramidShape(rows)
   if(!shape){
     // dead as a pyramid, but this row can still be the base of the next one
-    attempts.set(channel, { token: repeat.token, counts: [repeat.count], updatedAt: now })
+    attempts.set(channel, { rows: [tokens], updatedAt: now })
     return
   }
 
-  const { rows, inverted } = shape
-  const current = rows[rows.length - 1]
-  const descending = rows.length > 1 && current < rows[rows.length - 2]
-  const peak = Math.max(...rows)
+  const { heights, inverted } = shape
+  const current = heights[heights.length - 1]
+  const descending = heights.length > 1 && current < heights[heights.length - 2]
+  const peak = Math.max(...heights)
 
   // OWNER is exempt everywhere except his own channel, so he can still test there
   const exempt = user === OWNER && channelName(channel) !== OWNER_CHANNEL
@@ -213,7 +220,7 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
     return
   }
 
-  attempts.set(channel, { token: repeat.token, counts, updatedAt: now })
+  attempts.set(channel, { rows, updatedAt: now })
 }
 
 export function onStreamerOnline(channel: string){ //TODO
