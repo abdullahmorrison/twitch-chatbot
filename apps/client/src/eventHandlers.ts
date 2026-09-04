@@ -106,6 +106,11 @@ function isPrefix(a: string[], b: string[]): boolean {
   return a.length <= b.length && a.every((t, i) => t === b[i])
 }
 
+// is this row one unit repeated - "GotEEM GotEEM GotEEM", or "a b a b" at width 2
+function isRepeatedUnit(row: string[], width: number): boolean {
+  return row.length % width === 0 && row.every((t, i) => t === row[i % width])
+}
+
 // Turns the rows so far into row heights, or null if this can no longer be a
 // pyramid. The rows do not have to be one emote repeated - what makes a pyramid
 // is that each row is the one before it plus a fixed-width step, and on the way
@@ -142,6 +147,12 @@ function pyramidShape(rows: string[][]): { heights: number[], inverted: boolean 
 
   if(inverted){
     if(heights[0] < MIN_PYRAMID_HEIGHT) return null
+    // Going down, two rows are the whole case for a block - "a b c" then "a b"
+    // is already tall and already descending. That happens in normal chat all
+    // day, so the top row has to look like a pyramid base as well: one unit
+    // repeated. Climbing needs four rows and a turn, which nobody types by
+    // accident, so it stays free to mix its rows.
+    if(!isRepeatedUnit(rows[0], width)) return null
     for(let i = 1; i < heights.length; i++){
       const step = heights[i] - heights[i-1]
       if(step !== 0 && step !== -1) return null
