@@ -16,11 +16,13 @@ const OWNER_CHANNEL = 'abdullahmorrison' // test channel - OWNER is fair game he
 // twurple may hand us '#channel' or 'channel' depending on version
 const channelName = (channel: string) => channel.replace(/^#/, '').toLowerCase()
 
-// One in-progress pyramid attempt per channel. Anyone matching the current row
-// can carry it on - pyramids get finished collaboratively - but a message that
-// isn't the next row kills it.
+// One in-progress attempt per chatter per channel. A single slot per channel
+// cannot survive a real chat - twenty other people talk between the rows, and
+// every one of those messages used to wipe the attempt, so nothing ever reached
+// the row that gets blocked. Anyone can still carry on anyone else's attempt,
+// which is how a pyramid built by two people together gets caught.
 type Attempt = { rows: string[][], updatedAt: number }
-const attempts = new Map<string, Attempt>()
+const attempts = new Map<string, Map<string, Attempt>>()
 
 const blockMessages = [
   'no pyramids in this chat Madge',
@@ -203,25 +205,33 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
   const tokens = tokenize(msg)
   if(DEBUG) console.log(`[${channel}] ${user}: ${JSON.stringify(raw)} -> ${JSON.stringify(tokens)}`)
   if(tokens.length === 0){
-    attempts.delete(channel)
+    attempts.get(channel)?.delete(user)
     return
   }
 
   const now = Date.now()
-  const existing = attempts.get(channel)
-  const continues = existing && now - existing.updatedAt < PYRAMID_TIMEOUT_MS
-  const rows = continues ? [...existing!.rows, tokens] : [tokens]
+  let live = attempts.get(channel)
+  if(!live){ live = new Map(); attempts.set(channel, live) }
+  for(const [who, a] of live) if(now - a.updatedAt >= PYRAMID_TIMEOUT_MS) live.delete(who)
 
-  const shape = pyramidShape(rows)
-  if(!shape){
-    if(DEBUG) console.log(`[${channel}] no shape, restarting from this row`)
-    // dead as a pyramid, but this row can still be the base of the next one
-    attempts.set(channel, { rows: [tokens], updatedAt: now })
+  // this row belongs to whichever attempt it carries furthest, whoever started it
+  let best: { owner: string, rows: string[][], shape: NonNullable<ReturnType<typeof pyramidShape>> } | null = null
+  for(const [who, a] of live){
+    const rows = [...a.rows, tokens]
+    const shape = pyramidShape(rows)
+    if(shape && (!best || rows.length > best.rows.length)) best = { owner: who, rows, shape }
+  }
+
+  if(!best){
+    if(DEBUG) console.log(`[${channel}] no shape, ${user} starts over from this row`)
+    // dead as a pyramid, but this row can still be the base of the next one.
+    // Only this chatter's attempt restarts - everyone else's keeps running.
+    live.set(user, { rows: [tokens], updatedAt: now })
     return
   }
 
-  const { heights, inverted } = shape
-  if(DEBUG) console.log(`[${channel}] heights ${heights.join(',')}${inverted ? ' inverted' : ''}`)
+  const { heights, inverted } = best.shape
+  if(DEBUG) console.log(`[${channel}] ${best.owner}'s attempt: heights ${heights.join(',')}${inverted ? ' inverted' : ''}`)
   const current = heights[heights.length - 1]
   const descending = heights.length > 1 && current < heights[heights.length - 2]
   const peak = Math.max(...heights)
@@ -234,7 +244,7 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
   // `user` is whoever posted this row, which may not be who started the pyramid.
   if(descending && current === 2 && tall && !exempt){
     say(channel, `@${user} ${inverted ? nextInvertedMessage() : nextBlockMessage()}`)
-    attempts.delete(channel)
+    live.delete(best.owner)
     return
   }
 
@@ -242,11 +252,11 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
   // any earlier would break the pyramid, which is the point of the exemption.
   if(descending && current === 1 && tall && exempt){
     say(channel, `@${user} ${nextCreatorMessage()}`)
-    attempts.delete(channel)
+    live.delete(best.owner)
     return
   }
 
-  attempts.set(channel, { rows, updatedAt: now })
+  live.set(best.owner, { rows: best.rows, updatedAt: now })
 }
 
 export function onStreamerOnline(channel: string){ //TODO
