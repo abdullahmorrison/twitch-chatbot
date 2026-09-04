@@ -168,21 +168,31 @@ function uptime(): string {
   return `${Math.floor(hours / 24)}d${hours % 24}h`
 }
 
+// A rejected say is invisible otherwise - the handler is async and nobody awaits
+// it, so twitch refusing the message looks exactly like never trying to send.
+function say(channel: string, message: string){
+  chatClient.say(channel, message).catch(e => console.error('\x1b[31m%s\x1b[0m', `* say failed in ${channel}: ${e}`))
+}
+
+// PYRAMID_DEBUG=1 prints what the bot actually receives. Worth it because a
+// message copied out of a chat client can lose the padding that fooled us.
+const DEBUG = !!process.env.PYRAMID_DEBUG
+
 let paused = false
 export async function onMessageHandler(channel: string, user: string, raw: string, chatMsg?: ChatMessage) {
   const msg = stripReplyPrefix(raw, chatMsg)
   // answers even while paused - the point is to prove the bot is reachable
   if(user === OWNER && msg === '!heartbeat'){
-    chatClient.say(channel, `@${user} MrDestructoid alive, up ${uptime()}, ${paused ? 'PAUSED' : 'watching for pyramids'}`)
+    say(channel, `@${user} MrDestructoid alive, up ${uptime()}, ${paused ? 'PAUSED' : 'watching for pyramids'}`)
     return
   }
   if(user === OWNER && msg === '!pause'){
-    chatClient.say(channel, 'bot has been paused Bedge')
+    say(channel, 'bot has been paused Bedge')
     paused = true
     return
   }
   if(user === OWNER && msg === '!unpause'){
-    chatClient.say(channel, 'bot has been unpaused weLive')
+    say(channel, 'bot has been unpaused weLive')
     paused = false
     return
   }
@@ -191,6 +201,7 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
   if(user.toLowerCase() === chatClient.irc.currentNick?.toLowerCase()) return
 
   const tokens = tokenize(msg)
+  if(DEBUG) console.log(`[${channel}] ${user}: ${JSON.stringify(raw)} -> ${JSON.stringify(tokens)}`)
   if(tokens.length === 0){
     attempts.delete(channel)
     return
@@ -203,12 +214,14 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
 
   const shape = pyramidShape(rows)
   if(!shape){
+    if(DEBUG) console.log(`[${channel}] no shape, restarting from this row`)
     // dead as a pyramid, but this row can still be the base of the next one
     attempts.set(channel, { rows: [tokens], updatedAt: now })
     return
   }
 
   const { heights, inverted } = shape
+  if(DEBUG) console.log(`[${channel}] heights ${heights.join(',')}${inverted ? ' inverted' : ''}`)
   const current = heights[heights.length - 1]
   const descending = heights.length > 1 && current < heights[heights.length - 2]
   const peak = Math.max(...heights)
@@ -220,7 +233,7 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
   // one row away from finishing: tall enough, and they're back down to 2.
   // `user` is whoever posted this row, which may not be who started the pyramid.
   if(descending && current === 2 && tall && !exempt){
-    chatClient.say(channel, `@${user} ${inverted ? nextInvertedMessage() : nextBlockMessage()}`)
+    say(channel, `@${user} ${inverted ? nextInvertedMessage() : nextBlockMessage()}`)
     attempts.delete(channel)
     return
   }
@@ -228,7 +241,7 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
   // OWNER got one all the way down unblocked - let it land, then say so. Speaking
   // any earlier would break the pyramid, which is the point of the exemption.
   if(descending && current === 1 && tall && exempt){
-    chatClient.say(channel, `@${user} ${nextCreatorMessage()}`)
+    say(channel, `@${user} ${nextCreatorMessage()}`)
     attempts.delete(channel)
     return
   }
