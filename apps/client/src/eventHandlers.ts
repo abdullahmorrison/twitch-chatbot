@@ -192,11 +192,20 @@ function say(channel: string, message: string){
 const DEBUG = !!process.env.PYRAMID_DEBUG
 
 let paused = false
+// Separate from paused on purpose: pausing takes the whole bot off, this leaves
+// it running and only stops it policing pyramids.
+let blockingPyramids = true
+
+function status(): string {
+  if(paused) return 'PAUSED'
+  return blockingPyramids ? 'watching for pyramids' : 'idle, pyramid blocking off'
+}
+
 export async function onMessageHandler(channel: string, user: string, raw: string, chatMsg?: ChatMessage) {
   const msg = stripReplyPrefix(raw, chatMsg)
   // answers even while paused - the point is to prove the bot is reachable
   if(user === OWNER && msg === '!heartbeat'){
-    say(channel, `@${user} MrDestructoid alive, up ${uptime()}, ${paused ? 'PAUSED' : 'watching for pyramids'}`)
+    say(channel, `@${user} MrDestructoid alive, up ${uptime()}, ${status()}`)
     return
   }
   if(user === OWNER && msg === '!pause'){
@@ -210,6 +219,20 @@ export async function onMessageHandler(channel: string, user: string, raw: strin
     return
   }
   if(paused) return
+
+  if(user === OWNER && msg === '!pyramids on'){
+    say(channel, 'pyramid blocking on Madge')
+    blockingPyramids = true
+    return
+  }
+  if(user === OWNER && msg === '!pyramids off'){
+    say(channel, 'pyramid blocking off, build away Okayge')
+    blockingPyramids = false
+    // half-built attempts would be stale by the time it comes back on
+    attempts.clear()
+    return
+  }
+  if(!blockingPyramids) return
 
   if(user.toLowerCase() === chatClient.irc.currentNick?.toLowerCase()) return
 
